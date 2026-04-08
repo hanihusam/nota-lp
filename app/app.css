@@ -1,9 +1,12 @@
-@import "tailwindcss" source(".");
+@import 'tailwindcss' source('.');
 
 @theme {
-  --font-serif: "Instrument Serif", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif:
+    'Instrument Serif', ui-serif, Georgia, Cambria, 'Times New Roman', Times,
+    serif;
+  --font-sans:
+    'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   /* Primitive: gray scale (matches Figma nota-primitives; overrides Tailwind v4 defaults) */
   --color-gray-50: #fafafa;
@@ -104,8 +107,8 @@
 
 @utility text-button {
   font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 500;
   line-height: 1;
   letter-spacing: 0.01em;
 }

@@ -1,15 +1,118 @@
 @import "tailwindcss" source(".");
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+  --font-serif: "Instrument Serif", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* Primitive: gray scale (matches Figma nota-primitives; overrides Tailwind v4 defaults) */
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f4f4f5;
+  --color-gray-200: #e4e4e7;
+  --color-gray-300: #d4d4d8;
+  --color-gray-400: #a1a1aa;
+  --color-gray-500: #71717a;
+  --color-gray-600: #52525b;
+  --color-gray-700: #3f3f46;
+  --color-gray-800: #27272a;
+  --color-gray-900: #18181b;
+  --color-gray-950: #09090b;
+
+  /* Primitive: sage scale */
+  --color-sage-50: #f1f6f2;
+  --color-sage-100: #e3ede4;
+  --color-sage-200: #c8d9ca;
+  --color-sage-300: #a8c1ac;
+  --color-sage-400: #89a88e;
+  --color-sage-500: #6b8f71;
+  --color-sage-600: #55795e;
+  --color-sage-700: #3f6348;
+  --color-sage-800: #2d4a35;
+  --color-sage-900: #1a2f20;
+  --color-sage-950: #0f1f14;
+
+  /* Semantic: backgrounds */
+  --color-page: #09090b;
+  --color-surface: #18181b;
+  --color-surface-secondary: #27272a;
+  --color-overlay: color-mix(in srgb, #18181b 90%, transparent);
+
+  /* Semantic: text */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #71717a;
+  --color-text-disabled: #52525b;
+  --color-text-accent: #89a88e;
+  --color-text-on-accent: #ffffff;
+
+  /* Semantic: borders */
+  --color-border: #27272a;
+  --color-border-strong: #3f3f46;
+  --color-border-accent: #6b8f71;
+
+  /* Semantic: icons */
+  --color-icon-primary: #d4d4d8;
+  --color-icon-secondary: #71717a;
+  --color-icon-accent: #89a88e;
+
+  /* Semantic: button */
+  --color-btn-primary: #6b8f71;
+  --color-btn-primary-hover: #55795e;
+  --color-btn-primary-pressed: #3f6348;
+  --color-btn-primary-text: #ffffff;
+}
+
+@utility text-display {
+  font-family: var(--font-serif);
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 74px;
+  letter-spacing: 0;
+}
+
+@utility text-heading-1 {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 43.2px;
+  letter-spacing: -0.01em;
+}
+
+@utility text-body {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 27px;
+  letter-spacing: 0;
+}
+
+@utility text-body-sm {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22.5px;
+  letter-spacing: 0;
+}
+
+@utility text-caption {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 19.5px;
+  letter-spacing: -0.025em;
+}
+
+@utility text-button {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
 }
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
-
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+  @apply bg-gray-950 text-white;
+  font-family: var(--font-sans);
+  color-scheme: dark;
 }

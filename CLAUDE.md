@@ -146,3 +146,99 @@ Create `public/images/` directory and place product screenshots there.
 - 12-column grid system
 - 24px gutters between columns
 - 20px margins on mobile
+
+## Figma MCP Integration Rules
+
+### Required Workflow
+
+1. Call `get_design_context` with the fileKey and nodeId
+2. Call `get_screenshot` for visual reference
+3. Adapt output to this project's conventions — do not use raw generated code verbatim
+4. Validate visually against the screenshot before marking done
+
+### Token Mapping
+
+**Colors — always use Tailwind classes, never hardcode hex values:**
+
+Semantic token classes (from `@theme` in `app/app.css`):
+
+| Figma token | Tailwind class | Hex |
+|---|---|---|
+| `background/primary` | `bg-page` | `#09090b` |
+| card/surface bg | `bg-surface` | `#18181b` |
+| `text/primary` | `text-text-primary` | `#ffffff` |
+| `text/secondary` | `text-text-secondary` | `#a1a1aa` |
+| `text/tertiary` | `text-text-tertiary` | `#71717a` |
+| text disabled | `text-text-disabled` | `#52525b` |
+| `text/accent` | `text-text-accent` | `#89a88e` |
+| `border/default` | `border-border` | `#27272a` |
+| `border/strong` | `border-border-strong` | `#3f3f46` |
+| `button/primary` | `bg-btn-primary` | `#6b8f71` |
+| button hover | `hover:bg-btn-primary-hover` | `#55795e` |
+| button pressed | `active:bg-btn-primary-pressed` | `#3f6348` |
+
+Primitive scale classes (for when you need a raw palette value):
+
+| Figma token | Tailwind class | Hex |
+|---|---|---|
+| `color/sage/400` | `text-sage-400` / `bg-sage-400` | `#89a88e` |
+| `color/sage/500` | `text-sage-500` / `bg-sage-500` | `#6b8f71` |
+| `color/sage/600` | `bg-sage-600` | `#55795e` |
+| `color/sage/700` | `bg-sage-700` | `#3f6348` |
+| `color/sage/900` | `bg-sage-900` | `#1a2f20` |
+| `color/gray/800` | `border-gray-800` | `#27272a` |
+| `color/gray/700` | `border-gray-700` | `#3f3f46` |
+
+**Typography — use semantic utility classes from `app/app.css`, never generic Tailwind sizes:**
+
+| Figma token | CSS utility |
+|---|---|
+| `display-1` (64px, serif, 400) | `text-display` |
+| `heading-1` (36px, serif, 400) | `text-heading-1` |
+| `paragraph` (18px, sans, 500) | `text-body` |
+| `paragraph-sm` (15px, sans, 500) | `text-body-sm` |
+| `caption` (13px, sans, 600) | `text-caption` |
+| button text (15px, sans, 600) | `text-button` |
+
+IMPORTANT: Never use `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl`, etc. Always use the semantic classes above.
+
+**Fonts:**
+- `font/family/title` (Instrument Serif) → `font-serif`
+- `font/family/body` (Plus Jakarta Sans) → `font-sans`
+
+**Spacing — Figma space tokens map 1:1 to Tailwind defaults:**
+
+| Figma | px | Tailwind |
+|---|---|---|
+| `space/1` | 4px | `p-1`, `gap-1`, etc. |
+| `space/2` | 8px | `p-2`, `gap-2`, etc. |
+| `space/3` | 12px | `p-3` |
+| `space/4` | 16px | `p-4` |
+| `space/6` | 24px | `p-6` |
+| `space/8` | 32px | `p-8` |
+| `space/24` | 96px | `p-24` |
+| `space/32` | 128px | `p-32` |
+
+### Component Conventions (Landing Page Specific)
+
+- Components are flat in `app/components/`, PascalCase filenames (e.g. `Hero.tsx`)
+- Named `const` arrow functions with `.displayName` set immediately after
+- Named exports (no default exports for section components)
+- No `clsx`/`clsxm` installed — use plain Tailwind class strings; install `clsx` only if dynamic merging is needed
+- Forward a `className` prop for composability when it makes sense
+- No barrel `index.ts` needed for this flat structure
+
+### Styling Notes
+
+- All components are dark-only — no `dark:` variants needed
+- Container: `max-w-6xl mx-auto px-6` (desktop), override with `px-5` on mobile
+- The `sage-*` color scale is defined in `app/app.css` `@theme` block
+- Hero image: `rounded-[12px] border border-gray-800` + glow + two `drop-shadow` values
+- Feature images: `rounded-[12px] border border-gray-800` + two `drop-shadow` values (no glow)
+
+### Asset Handling
+
+- IMPORTANT: If Figma MCP returns a `localhost` image source, use it directly as `src`
+- IMPORTANT: Do not install icon libraries — use inline SVG from the Figma payload
+- Product screenshots live in `public/images/`
+- Use standard `<img>` tags with descriptive `alt` text

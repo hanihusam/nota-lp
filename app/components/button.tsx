@@ -3,7 +3,7 @@ import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { cn } from '~/lib/cn'
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost'
-type ButtonSize = 'base' | 'lg'
+type ButtonSize = 'sm' | 'base' | 'lg'
 type ButtonIconPosition = 'left' | 'right'
 
 interface ButtonProps extends ComponentPropsWithRef<'button'> {
@@ -41,8 +41,9 @@ const variantClasses: Record<ButtonVariant, string> = {
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
-  base: 'px-5 py-2',
-  lg: 'px-7 py-3',
+  sm: 'px-3 py-2 text-[13px] font-semibold leading-[19.5px] gap-1.5',
+  base: 'px-5 py-2 text-body',
+  lg: 'px-7 py-3 text-body',
 }
 
 const Button = ({
@@ -56,7 +57,7 @@ const Button = ({
   return (
     <button
       className={cn(
-        'text-body rounded-lg inline-flex items-center gap-2 transition-colors',
+        'rounded-lg inline-flex items-center gap-2 transition-colors',
         variantClasses[variant],
         sizeClasses[size],
         className,

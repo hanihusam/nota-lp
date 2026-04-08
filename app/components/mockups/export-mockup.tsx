@@ -1,102 +1,152 @@
+function IconLink() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+    </svg>
+  )
+}
+function IconDownload() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  )
+}
+
 const ExportMockup = () => {
   return (
-    <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200">
-      <div className="bg-gray-50 border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-sage-500 to-sage-700 rounded-lg flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900">Mobile App Redesign</h3>
-            <p className="text-xs text-gray-500">PDF Export Preview</p>
-          </div>
+    // 620px card at left-0 inside 576px container — overflows 44px to the right.
+    // Card has overflow-hidden: the body's 660px left panel is clipped to 620px.
+    // The Export Settings sidebar (starts at x=660) is not visible.
+    <div
+      className="absolute left-0 top-0 bg-page border border-border rounded-xl overflow-hidden p-px"
+      style={{
+        width: '620px',
+        height: '515px',
+        boxShadow: '0px 4px 16px 0px rgba(0,0,0,0.4), 0px 24px 80px 0px rgba(107,143,113,0.1)',
+      }}
+    >
+      {/* Header: breadcrumb + action buttons (52px) */}
+      <div className="border-b border-gray-800/30 flex items-center justify-between px-6 shrink-0" style={{ height: '52px' }}>
+        <div className="flex items-center gap-2 text-[13px] leading-[19.5px]">
+          <span className="text-text-tertiary">Proposals</span>
+          <span className="text-border-strong text-[13px]">/</span>
+          <span className="text-text-tertiary">Website Redesign</span>
+          <span className="text-border-strong text-[13px]">/</span>
+          <span className="text-white font-medium">Export</span>
         </div>
         <div className="flex items-center gap-2">
-          <button className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
-            Cancel
+          <button
+            className="flex items-center gap-1.5 border border-border-strong text-white text-[13px] font-medium leading-[19.5px] px-3 rounded-lg cursor-pointer hover:bg-surface transition-colors"
+            style={{ height: '33.5px' }}
+          >
+            <IconLink /> Copy share link
           </button>
-          <button className="px-3 py-1.5 text-sm text-white bg-sage-600 hover:bg-sage-700 rounded-md transition-colors">
-            Download
+          <button
+            className="flex items-center gap-1.5 bg-btn-primary hover:bg-btn-primary-hover text-white text-[13px] font-medium leading-[19.5px] px-4 rounded-lg cursor-pointer transition-colors"
+            style={{ height: '31.5px' }}
+          >
+            <IconDownload /> Download PDF
           </button>
         </div>
       </div>
 
-      <div className="p-8 bg-white">
-        <div className="max-w-2xl mx-auto space-y-6">
-          <div className="flex items-start justify-between pb-6 border-b border-gray-200">
-            <div>
-              <h1 className="text-3xl font-serif text-gray-900 mb-2">Sarah Mitchell</h1>
-              <p className="text-gray-600">Mobile App Redesign Project</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500 mb-1">Proposal Date</p>
-              <p className="text-sm font-medium text-gray-900">December 10, 2024</p>
-            </div>
-          </div>
+      {/* Body — 660px left panel (clips to 620px), Export Settings hidden beyond x=660 */}
+      <div className="overflow-hidden" style={{ height: '461px' }}>
+        {/* Left panel: 660px wide, dark bg, white paper centered */}
+        <div
+          className="bg-page flex justify-center overflow-hidden shrink-0"
+          style={{ width: '660px', height: '461px', paddingTop: '40px' }}
+        >
+          {/* White PDF paper: 595px wide, 986px tall (only ~421px visible) */}
+          <div
+            className="bg-white shrink-0 overflow-hidden"
+            style={{
+              width: '595px',
+              height: '986px',
+              borderRadius: '4px',
+              boxShadow: '0px 24px 80px 0px rgba(0,0,0,0.4), 0px 8px 24px 0px rgba(0,0,0,0.3)',
+            }}
+          >
+            {/* PDF content — uses absolute positioning matching Figma */}
+            <div className="relative size-full">
 
-          <div className="space-y-4">
-            <div>
-              <h2 className="text-xl font-serif text-gray-900 mb-3">Scope Briefing</h2>
-              <div className="space-y-2 text-gray-700 text-sm leading-relaxed">
-                <p>
-                  Complete redesign of mobile application interface focusing on user experience improvements and modern design patterns.
+              {/* Header row: nota logo + proposal info */}
+              <div className="absolute flex items-start justify-between" style={{ left: '40px', top: '40px', width: '515px' }}>
+                <p className="font-serif italic text-[18px] text-gray-950 leading-[27px]">nota</p>
+                <div className="text-right">
+                  <p className="text-[10px] text-gray-400 uppercase tracking-[1.2px] leading-[15px]">Proposal</p>
+                  <p className="text-[11px] text-gray-500 leading-[16.5px]">PRO-2026-041</p>
+                  <p className="text-[11px] text-gray-500 leading-[16.5px]">March 8, 2026</p>
+                </div>
+              </div>
+
+              {/* Sage accent line */}
+              <div className="absolute bg-btn-primary" style={{ left: '40px', top: '132px', width: '48px', height: '2px' }} />
+
+              {/* Recipient section */}
+              <div className="absolute" style={{ left: '40px', top: '166px', width: '515px' }}>
+                <p className="text-[9px] text-gray-400 uppercase tracking-[0.9px] leading-[13.5px] mb-[8px]">Prepared for</p>
+                <p className="font-serif text-[26px] text-gray-950 leading-[31.2px] mb-[4px]">Sarah Mitchell</p>
+                <p className="text-[12px] text-gray-500 leading-[18px]">Mitchell Design Co. · mitchell.design@email.com</p>
+              </div>
+
+              {/* Project section */}
+              <div className="absolute flex flex-col gap-2" style={{ left: '40px', top: '272.7px', width: '515px' }}>
+                <p className="text-[9px] text-gray-400 uppercase tracking-[0.9px] leading-[13.5px]">Project</p>
+                <p className="font-serif text-[20px] text-gray-950 leading-[30px]">Website Redesign</p>
+                <p className="text-[11px] text-gray-500 leading-[18.7px]">
+                  Complete redesign of the existing marketing website, including new visual identity, improved user experience, and responsive frontend development.
                 </p>
-                <p>
-                  The project includes comprehensive user research, wireframing, high-fidelity mockups, and interactive prototypes.
-                </p>
               </div>
-            </div>
 
-            <div className="bg-gray-50 rounded-lg p-5 space-y-3">
-              <h3 className="text-base font-semibold text-gray-900">Project Breakdown</h3>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                  <span className="text-sm text-gray-700">Discovery & Research</span>
-                  <span className="text-sm font-medium text-gray-900">$2,500</span>
+              {/* Line items table */}
+              <div className="absolute" style={{ left: '40px', top: '401.59px', width: '515px' }}>
+                {/* Column headers */}
+                <div
+                  className="grid border-b border-gray-200"
+                  style={{ gridTemplateColumns: 'minmax(0,335fr) minmax(0,50fr) minmax(0,60fr) minmax(0,1fr)', paddingTop: '10px', paddingBottom: '11px' }}
+                >
+                  <p className="text-[9px] text-gray-400 uppercase tracking-[0.72px] leading-[13.5px]">Service</p>
+                  <p className="text-[9px] text-gray-400 uppercase tracking-[0.72px] leading-[13.5px] text-right">Hours</p>
+                  <p className="text-[9px] text-gray-400 uppercase tracking-[0.72px] leading-[13.5px] text-right">Rate</p>
+                  <p className="text-[9px] text-gray-400 uppercase tracking-[0.72px] leading-[13.5px] text-right">Subtotal</p>
                 </div>
-                <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                  <span className="text-sm text-gray-700">UI Design & Prototyping</span>
-                  <span className="text-sm font-medium text-gray-900">$5,000</span>
-                </div>
-                <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                  <span className="text-sm text-gray-700">Design System Development</span>
-                  <span className="text-sm font-medium text-gray-900">$3,000</span>
-                </div>
-                <div className="flex items-center justify-between py-2">
-                  <span className="text-sm text-gray-700">Implementation Support</span>
-                  <span className="text-sm font-medium text-gray-900">$2,000</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between pt-3 border-t-2 border-gray-300">
-                <span className="text-base font-semibold text-gray-900">Total Investment</span>
-                <span className="text-xl font-bold text-sage-700">$12,500</span>
-              </div>
-            </div>
 
-            <div className="grid grid-cols-3 gap-4 pt-4">
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Timeline</p>
-                <p className="text-sm font-semibold text-gray-900">8-10 weeks</p>
+                {/* Row 1: Discovery & Research */}
+                <div
+                  className="grid border-b border-gray-100"
+                  style={{ gridTemplateColumns: 'minmax(0,335fr) minmax(0,50fr) minmax(0,60fr) minmax(0,1fr)', paddingTop: '12px', paddingBottom: '13px' }}
+                >
+                  <div className="flex flex-col gap-0.5">
+                    <p className="text-[12px] font-medium text-gray-950 leading-[18px]">Discovery &amp; Research</p>
+                    <p className="text-[10px] text-gray-400 leading-[15px]">User interviews, competitive analysis, and requirements gathering</p>
+                  </div>
+                  <p className="text-[12px] text-gray-500 leading-[18px] text-right">15</p>
+                  <p className="text-[12px] text-gray-500 leading-[18px] text-right">$50/hr</p>
+                  <p className="text-[12px] font-medium text-gray-950 leading-[18px] text-right">$750.00</p>
+                </div>
+
+                {/* Row 2: UI Design */}
+                <div
+                  className="grid border-b border-gray-100"
+                  style={{ gridTemplateColumns: 'minmax(0,335fr) minmax(0,50fr) minmax(0,60fr) minmax(0,1fr)', paddingTop: '12px', paddingBottom: '13px' }}
+                >
+                  <div className="flex flex-col gap-0.5">
+                    <p className="text-[12px] font-medium text-gray-950 leading-[18px]">UI Design</p>
+                    <p className="text-[10px] text-gray-400 leading-[15px]">Wireframes, high-fidelity mockups, and interactive prototypes</p>
+                  </div>
+                  <p className="text-[12px] text-gray-500 leading-[18px] text-right">30</p>
+                  <p className="text-[12px] text-gray-500 leading-[18px] text-right">$50/hr</p>
+                  <p className="text-[12px] font-medium text-gray-950 leading-[18px] text-right">$1,500.00</p>
+                </div>
               </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Start Date</p>
-                <p className="text-sm font-semibold text-gray-900">Jan 2, 2025</p>
-              </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Completion</p>
-                <p className="text-sm font-semibold text-gray-900">Mar 15, 2025</p>
-              </div>
+
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="bg-gray-50 border-t border-gray-200 px-8 py-4">
-        <p className="text-xs text-gray-500 text-center">
-          This proposal is valid for 30 days from the date of issue
-        </p>
       </div>
     </div>
   )

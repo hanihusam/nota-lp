@@ -24,104 +24,117 @@ export default function Home() {
         <Hero />
         <ValueProps />
 
-        <section className="py-24 px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-heading-1 text-text-primary mb-6">Beautiful proposals in a few clicks</h2>
-                <p className="text-body text-text-secondary mb-6">
-                  Create stunning, professional proposals using our intuitive editor. Choose from expertly designed templates or build your own from scratch. Add your branding, images, and pricing tables with ease.
-                </p>
-                <ul className="space-y-3">
-                  <li className="text-body text-text-secondary flex items-start">
-                    <span className="text-text-accent mr-3">•</span>
-                    <span>Drag-and-drop editor with rich formatting</span>
-                  </li>
-                  <li className="text-body text-text-secondary flex items-start">
-                    <span className="text-text-accent mr-3">•</span>
-                    <span>Professional templates to get started fast</span>
-                  </li>
-                  <li className="text-body text-text-secondary flex items-start">
-                    <span className="text-text-accent mr-3">•</span>
-                    <span>Custom branding and styling options</span>
-                  </li>
+        {/* Features section — matches Figma node 46:751 (h=1746px):
+            gap-32 (128px) between the three feature rows,
+            pb-32 (128px) at the bottom of the container.
+            Feature 1 has pb-24 only (no top padding, starts flush).
+            Features 2 & 3 have py-24 (96px top + bottom). */}
+        <section>
+          <div className="max-w-6xl mx-auto px-5 lg:px-0 flex flex-col gap-32 pb-32">
+
+            {/* Feature 1 — text left, image right */}
+            <div className="flex items-start justify-between pb-24">
+              <div className="flex flex-col gap-6 w-[440px] shrink-0">
+                <div className="flex flex-col gap-4">
+                  <p className="text-caption text-text-accent">PROPOSAL EDITOR</p>
+                  <h2 className="text-heading-1 text-text-primary">Beautiful proposals in a few clicks</h2>
+                  <p className="text-body text-text-secondary">
+                    Create proposals with pre-built blocks. Client info auto-populates and calculations update in real-time.
+                  </p>
+                </div>
+                <ul className="flex flex-col gap-3">
+                  {[
+                    'Drag and drop proposal blocks',
+                    'Live preview as you type',
+                    'Automatic subtotals and tax',
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-2">
+                      <div className="size-5 shrink-0 flex items-center justify-center">
+                        <div className="size-1.5 rounded-full bg-sage-400" />
+                      </div>
+                      <span className="text-body-sm text-text-secondary">{item}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
-              <div>
+              <div className="relative shrink-0" style={{ width: '576px', height: '294px' }}>
                 <ProposalsMockup />
               </div>
             </div>
-          </div>
-        </section>
 
-        <section className="py-24 px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="md:order-2">
-                <h2 className="text-heading-1 text-text-primary mb-6">Your clients, remembered</h2>
-                <p className="text-body text-text-secondary mb-6">
-                  Keep all your client information organized in one place. View proposal history, track communications, and access contact details whenever you need them. Build stronger relationships with complete context.
-                </p>
-                <ul className="space-y-3">
-                  <li className="text-body text-text-secondary flex items-start">
-                    <span className="text-text-accent mr-3">•</span>
-                    <span>Centralized client database</span>
-                  </li>
-                  <li className="text-body text-text-secondary flex items-start">
-                    <span className="text-text-accent mr-3">•</span>
-                    <span>Complete proposal history per client</span>
-                  </li>
-                  <li className="text-body text-text-secondary flex items-start">
-                    <span className="text-text-accent mr-3">•</span>
-                    <span>Quick access to contact information</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="md:order-1">
+            {/* Feature 2 — image left, text right */}
+            <div className="flex items-start justify-between py-24">
+              <div className="relative shrink-0" style={{ width: '576px', height: '294px' }}>
                 <ClientsMockup />
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-24 px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-heading-1 text-text-primary mb-6">Export and share, your way</h2>
-                <p className="text-body text-text-secondary mb-6">
-                  Download proposals as PDF for offline sharing or archiving. Generate shareable links with password protection. Export to other formats when needed. Your proposals, your rules.
-                </p>
-                <ul className="space-y-3">
-                  <li className="text-body text-text-secondary flex items-start">
-                    <span className="text-text-accent mr-3">•</span>
-                    <span>Professional PDF exports</span>
-                  </li>
-                  <li className="text-body text-text-secondary flex items-start">
-                    <span className="text-text-accent mr-3">•</span>
-                    <span>Secure shareable links</span>
-                  </li>
-                  <li className="text-body text-text-secondary flex items-start">
-                    <span className="text-text-accent mr-3">•</span>
-                    <span>Multiple export formats</span>
-                  </li>
+              <div className="flex flex-col gap-6 w-[440px] shrink-0">
+                <div className="flex flex-col gap-4">
+                  <p className="text-caption text-text-accent">CLIENT MANAGEMENT</p>
+                  <h2 className="text-heading-1 text-text-primary">Your clients, remembered</h2>
+                  <p className="text-body text-text-secondary">
+                    Save client details once. Payment terms, rates, and addresses auto-fill every time you start a new proposal.
+                  </p>
+                </div>
+                <ul className="flex flex-col gap-3">
+                  {[
+                    'Saved client profiles',
+                    'Auto-fill on new proposals',
+                    'Track revenue per client',
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-2">
+                      <div className="size-5 shrink-0 flex items-center justify-center">
+                        <div className="size-1.5 rounded-full bg-sage-400" />
+                      </div>
+                      <span className="text-body-sm text-text-secondary">{item}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
-              <div>
+            </div>
+
+            {/* Feature 3 — text left, image right */}
+            <div className="flex items-start justify-between py-24">
+              <div className="flex flex-col gap-6 w-[440px] shrink-0">
+                <div className="flex flex-col gap-4">
+                  <p className="text-caption text-text-accent">EXPORT & SHARE</p>
+                  <h2 className="text-heading-1 text-text-primary">Export and share, your way</h2>
+                  <p className="text-body text-text-secondary">
+                    Generate branded PDFs with your colors and logo. Or share a live link and let clients view the proposal online.
+                  </p>
+                </div>
+                <ul className="flex flex-col gap-3">
+                  {[
+                    'Customizable PDF branding',
+                    'Shareable proposal links',
+                    'Toggle sections on or off',
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-2">
+                      <div className="size-5 shrink-0 flex items-center justify-center">
+                        <div className="size-1.5 rounded-full bg-sage-400" />
+                      </div>
+                      <span className="text-body-sm text-text-secondary">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="relative shrink-0" style={{ width: '576px', height: '294px' }}>
                 <ExportMockup />
               </div>
             </div>
+
           </div>
         </section>
 
         <TrustLine />
-        <section className="py-24 px-6 text-center">
-          <h2 className="text-heading-1 text-text-primary mb-6">Simplify proposals now</h2>
-          <Button variant="primary" size="lg">
-            Get Started
-          </Button>
-          <p className="text-body-sm text-text-secondary mt-4">
-            Free plan. No credit card required.
+
+        {/* Bottom CTA — Figma node 55:59 */}
+        <section className="py-32 flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-8">
+            <h2 className="text-heading-1 text-text-primary text-center">Simplify proposals now</h2>
+            <Button variant="primary" size="lg">Get Started</Button>
+          </div>
+          <p className="text-caption text-text-tertiary text-center">
+            Free to use. No account required.
           </p>
         </section>
       </main>

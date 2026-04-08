@@ -1,26 +1,22 @@
-const ValueProps = () => {
-  const values = [
-    { icon: '✉️', label: 'Email Integration' },
-    { icon: '📝', label: 'Beautiful Proposals' },
-    { icon: '📱', label: 'Mobile-Friendly' },
-    { icon: '📊', label: 'Pipeline Management' },
-    { icon: '📈', label: 'Analytics & Insights' },
-    { icon: '🤝', label: 'Team Collaboration' },
-  ]
+const items = [
+  'works offline',
+  'create in minutes',
+  'branded PDF export',
+  'auto tax calculation',
+  'client auto-fill',
+  'no subscriptions',
+]
 
+const ValueProps = () => {
   return (
-    <section className="py-12 border-y border-border">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-          {values.map((value, index) => (
-            <div key={index} className="text-center">
-              <div className="text-[30px] mb-2">{value.icon}</div>
-              <p className="text-caption uppercase text-text-secondary">
-                {value.label}
-              </p>
-            </div>
-          ))}
-        </div>
+    <section className="py-24 w-full flex items-center justify-center">
+      <div className="flex items-center gap-6">
+        {items.map((item, i) => (
+          <div key={item} className="flex items-center gap-6">
+            <p className="text-caption text-text-secondary whitespace-nowrap">{item}</p>
+            {i < items.length - 1 && <div className="w-px h-4 bg-border shrink-0" />}
+          </div>
+        ))}
       </div>
     </section>
   )

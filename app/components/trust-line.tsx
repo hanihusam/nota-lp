@@ -1,11 +1,9 @@
 const TrustLine = () => {
   return (
-    <section className="py-16 px-6">
-      <div className="max-w-4xl mx-auto text-center">
-        <p className="text-heading-1 italic text-text-secondary">
-          Trusted by tens of thousands of teams and creators around the world
-        </p>
-      </div>
+    <section className="py-24 px-[10px] flex items-center justify-center">
+      <p className="text-body italic text-text-tertiary text-center">
+        Designed for freelancers who&apos;d rather work than write proposals.
+      </p>
     </section>
   )
 }

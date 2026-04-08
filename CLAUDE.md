@@ -11,7 +11,8 @@ source of truth for how code should be written.
 - React Router v7 + TypeScript + TailwindCSS v4
 - Single page application. Index route at `app/routes/home.tsx`
 - Deployed to Cloudflare Workers
-- Font: Inter (currently loaded). Will add Instrument Serif and Plus Jakarta Sans
+- Fonts: Instrument Serif + Plus Jakarta Sans (loaded via Google Fonts in `app/root.tsx`)
+- `clsx` + `tailwind-merge` installed; `cn()` utility at `app/lib/cn.ts`
 
 ## Implementation Status
 
@@ -19,13 +20,20 @@ source of truth for how code should be written.
 - ✅ Project setup (React Router v7, TypeScript, TailwindCSS v4, Cloudflare Workers)
 - ✅ Coding patterns documented in STYLE.md
 - ✅ Design tokens defined below
+- ✅ Instrument Serif and Plus Jakarta Sans loaded in `app/root.tsx`
+- ✅ `cn()` utility (`clsx` + `tailwind-merge`) at `app/lib/cn.ts`
+- ✅ `Button` component with `primary`, `secondary`, `ghost` variants and `sm`/`base`/`lg` sizes
+- ✅ `Navbar` — logo left, ghost CTA right, transparent with scroll blur
+- ✅ `Hero` — eyebrow + display heading + subline + 2 CTAs + `HeroMockup`
+- ✅ `ValueProps` — horizontal strip of 6 value props (caption style)
+- ✅ Feature sections (Proposal Editor, Client Management, Export & Share) inline in `home.tsx`
+- ✅ Mockup components: `HeroMockup`, `ProposalsMockup`, `ClientsMockup`, `ExportMockup`
+- ✅ `TrustLine` — centered italic line
+- ✅ Bottom CTA section (inline in `home.tsx`)
+- ✅ `Footer` — copyright left, nav links right, divider above
 
 **To Do:**
-- Create `app/components/` directory with the 7 landing page components
-- Load Instrument Serif and Plus Jakarta Sans fonts in `app/root.tsx`
-- Create `public/images/` and add product screenshots
-- Implement each section component following STYLE.md conventions
-- Compose all sections in `app/routes/home.tsx`
+- Replace mockup components with real product screenshots in `public/images/`
 
 ## Design Tokens (from Figma)
 
@@ -88,37 +96,32 @@ source of truth for how code should be written.
 
 ```
 app/
-  root.tsx              # Root layout
-  app.css               # Global styles with Tailwind and Inter font
+  root.tsx              # Root layout — loads Google Fonts (Instrument Serif, Plus Jakarta Sans)
+  app.css               # Global styles, design tokens (@theme), semantic utility classes
   routes.ts             # Route configuration (single index route)
   routes/
-    home.tsx            # Index route - compose landing page sections here
-  welcome/              # Template welcome component (will be replaced)
-    welcome.tsx
-    logo-dark.svg
-    logo-light.svg
+    home.tsx            # Landing page — composes all sections
+  components/
+    button.tsx          # Button with primary/secondary/ghost variants, sm/base/lg sizes
+    navbar.tsx          # Logo left, ghost CTA right, transparent with scroll blur
+    hero.tsx            # Eyebrow + display heading + subline + 2 CTAs + HeroMockup
+    value-props.tsx     # Horizontal strip of 6 value props (caption style)
+    trust-line.tsx      # Single centered italic line
+    footer.tsx          # Copyright left, nav links right, divider above
+    mockups/
+      hero-mockup.tsx       # SVG/JSX mockup for hero section
+      proposals-mockup.tsx  # SVG/JSX mockup for Feature 1 (Editor)
+      clients-mockup.tsx    # SVG/JSX mockup for Feature 2 (Client Management)
+      export-mockup.tsx     # SVG/JSX mockup for Feature 3 (Export & Share)
+  lib/
+    cn.ts               # cn() utility — clsx + tailwind-merge
 workers/
   app.ts                # Cloudflare Workers handler
 public/
   favicon.ico
 ```
 
-## Component Structure (To Implement)
-
-Build these components in `app/components/` to compose the landing page:
-
-```
-app/components/
-  Navbar.tsx            # Logo left, CTA right, transparent with scroll blur
-  Hero.tsx              # Eyebrow + display heading + subline + 2 CTAs + screenshot
-  ValueProps.tsx        # Horizontal strip of 6 value props (caption style)
-  Feature.tsx           # Reusable component - text/image alternating layout
-  TrustLine.tsx         # Single centered italic line
-  BottomCTA.tsx         # Heading + button + caption
-  Footer.tsx            # Copyright + links with divider
-```
-
-**Composition:** Import all in `app/routes/home.tsx` to render complete landing page.
+**Note:** Feature sections (Proposal Editor, Client Management, Export & Share) and Bottom CTA are currently inlined in `home.tsx`. The `Feature.tsx` and `BottomCTA.tsx` components were not extracted as separate files.
 
 ## Images
 
@@ -224,7 +227,7 @@ IMPORTANT: Never use `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl`, e
 - Components are flat in `app/components/`, PascalCase filenames (e.g. `Hero.tsx`)
 - Named `const` arrow functions with `.displayName` set immediately after
 - Named exports (no default exports for section components)
-- No `clsx`/`clsxm` installed — use plain Tailwind class strings; install `clsx` only if dynamic merging is needed
+- `clsx` + `tailwind-merge` are installed — use `cn()` from `~/lib/cn` for dynamic class merging
 - Forward a `className` prop for composability when it makes sense
 - No barrel `index.ts` needed for this flat structure
 

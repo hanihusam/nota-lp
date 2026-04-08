@@ -58,15 +58,24 @@ npx wrangler versions deploy
 
 ```
 app/
-  root.tsx              # Root layout
-  app.css               # Global styles with design tokens
+  root.tsx              # Root layout — loads Google Fonts
+  app.css               # Global styles, design tokens, semantic utility classes
   routes/
     home.tsx            # Landing page composition
-  components/           # Reusable section components
-public/
-  images/               # Product screenshots
+  components/
+    button.tsx          # Button component (primary/secondary/ghost)
+    navbar.tsx          # Top navigation
+    hero.tsx            # Hero section
+    value-props.tsx     # Value propositions strip
+    trust-line.tsx      # Trust quote line
+    footer.tsx          # Footer
+    mockups/            # SVG/JSX product mockup components
+  lib/
+    cn.ts               # cn() utility (clsx + tailwind-merge)
 workers/
   app.ts                # Cloudflare Workers handler
+public/
+  favicon.ico
 ```
 
 ## Design Tokens

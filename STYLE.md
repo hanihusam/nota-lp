@@ -1,6 +1,7 @@
 # STYLE.md
 
-Coding patterns and conventions used in this codebase. Use as a reference when writing new code.
+Coding patterns and conventions used in this codebase. Use as a reference when
+writing new code.
 
 ---
 
@@ -41,7 +42,8 @@ Button.displayName = 'Button'
 
 ### Function Declarations (Routes and Default Exports)
 
-Named `function` declarations are used for route-level components and default-exported feature components.
+Named `function` declarations are used for route-level components and
+default-exported feature components.
 
 ```tsx
 // Route component
@@ -57,7 +59,8 @@ export default function ProfileInfoPanel({ ... }: ProfileInfoPanelProps) {
 
 ### `.displayName` is Required on Exported Arrow Functions
 
-Every exported `const` arrow function component must have `.displayName` set immediately after.
+Every exported `const` arrow function component must have `.displayName` set
+immediately after.
 
 ```tsx
 const Avatar = ({ ref, ...rest }: AvatarPropsWithRef) => { ... }
@@ -74,7 +77,7 @@ interface AvatarPropsWithRef extends AvatarProps {
   ref?: React.Ref<HTMLSpanElement>
 }
 
-const Avatar = ({ ref, ...rest }: AvatarPropsWithRef) => (
+const Avatar = ({ref, ...rest}: AvatarPropsWithRef) => (
   <span ref={ref} {...rest} />
 )
 ```
@@ -103,7 +106,8 @@ export function Modal({ ... }: ModalProps) { ... }
 
 ### Barrel Files (`index.ts`)
 
-Every UI sub-folder has an `index.ts`. Use `export * from` or `export { default as X } from`.
+Every UI sub-folder has an `index.ts`. Use `export * from` or
+`export { default as X } from`.
 
 ```ts
 // export * style
@@ -111,8 +115,8 @@ export * from './button'
 export * from './circle-button'
 
 // export { default as } style
-export { default as FeedbackMessage } from './feedback-message'
-export { default as TextField } from './text-field'
+export {default as FeedbackMessage} from './feedback-message'
+export {default as TextField} from './text-field'
 ```
 
 ---
@@ -191,27 +195,31 @@ const InputText = ({
 ### Ternary for Two Branches
 
 ```tsx
-{isOwner ? (
-  <button onClick={onEdit}>Edit</button>
-) : null}
+{
+  isOwner ? <button onClick={onEdit}>Edit</button> : null
+}
 ```
 
 ### `null` for Empty Branches (Never `false`)
 
 ```tsx
 // Correct:
-{condition ? <Component /> : null}
+{
+  condition ? <Component /> : null
+}
 
 // Incorrect:
-{condition ? <Component /> : false}
+{
+  condition ? <Component /> : false
+}
 ```
 
 ### `&&` for Simple Show/Hide
 
 ```tsx
-{isEnabled && (
-  <div className="...">Content</div>
-)}
+{
+  isEnabled && <div className="...">Content</div>
+}
 ```
 
 ### Early Returns for Guards and Empty States
@@ -229,15 +237,17 @@ return <EmptyState />
 ### Nested Ternaries for Multi-Type Branching
 
 ```tsx
-{media ? (
-  <>
-    {media.type === 'gif' ? (
-      <GifContent media={media} />
-    ) : !hasText ? (
-      <MediaContent media={media} />
-    ) : null}
-  </>
-) : null}
+{
+  media ? (
+    <>
+      {media.type === 'gif' ? (
+        <GifContent media={media} />
+      ) : !hasText ? (
+        <MediaContent media={media} />
+      ) : null}
+    </>
+  ) : null
+}
 ```
 
 ---
@@ -293,11 +303,13 @@ src/lib/                       # Pure utility functions
 
 ### `utils/` Sub-folder Inside UI Components
 
-UI components with variant logic get a `utils/` folder containing `helpers.ts` (functions), `types.ts` (TypeScript types), and `index.ts` (re-exports both).
+UI components with variant logic get a `utils/` folder containing `helpers.ts`
+(functions), `types.ts` (TypeScript types), and `index.ts` (re-exports both).
 
 ### No `index.tsx` for Components
 
-`index.ts` is reserved for barrel re-exports only. Every component has its own named file.
+`index.ts` is reserved for barrel re-exports only. Every component has its own
+named file.
 
 ### Namespace Object Pattern for Variant Groups
 
@@ -315,16 +327,16 @@ export default Skeleton
 
 ## 6. Naming Conventions
 
-| Category | Convention | Example |
-|----------|-----------|---------|
-| Files | kebab-case | `input-text.tsx`, `use-debounce.ts` |
-| Components | PascalCase | `InputText`, `MessageBubble` |
-| Custom hooks | `use` prefix, camelCase | `useDebounce`, `useAuthModal` |
-| Interfaces/Types | PascalCase | `ButtonSizes`, `ModalProps` |
-| Constants | SCREAMING_SNAKE_CASE with `as const` | `STORAGE_KEYS.AUTH_TOKEN` |
-| Store hooks | `use` prefix | `useAuthModal`, `useThemeStore` |
-| Event handlers (passed as props) | `on` prefix | `onModalClose`, `onSubmit` |
-| Event handlers (derived/local) | `handle` prefix | `handleCreatePost`, `handleChange` |
+| Category                         | Convention                           | Example                             |
+| -------------------------------- | ------------------------------------ | ----------------------------------- |
+| Files                            | kebab-case                           | `input-text.tsx`, `use-debounce.ts` |
+| Components                       | PascalCase                           | `InputText`, `MessageBubble`        |
+| Custom hooks                     | `use` prefix, camelCase              | `useDebounce`, `useAuthModal`       |
+| Interfaces/Types                 | PascalCase                           | `ButtonSizes`, `ModalProps`         |
+| Constants                        | SCREAMING_SNAKE_CASE with `as const` | `STORAGE_KEYS.AUTH_TOKEN`           |
+| Store hooks                      | `use` prefix                         | `useAuthModal`, `useThemeStore`     |
+| Event handlers (passed as props) | `on` prefix                          | `onModalClose`, `onSubmit`          |
+| Event handlers (derived/local)   | `handle` prefix                      | `handleCreatePost`, `handleChange`  |
 
 ---
 
@@ -342,24 +354,24 @@ Enforced by `eslint-plugin-simple-import-sort`. Order:
 ```tsx
 import './styles.css'
 
-import { useState, useCallback } from 'react'
+import {useState, useCallback} from 'react'
 
-import { Button } from '@/components/ui/button'
+import {Button} from '@/components/ui/button'
 import clsxm from '@/lib/clsxm'
 
-import { LoginPanel } from '../login-panel'
+import {LoginPanel} from '../login-panel'
 
-import { MessageStatus } from './message-status'
+import {MessageStatus} from './message-status'
 
-import { useNavigate } from 'react-router'
+import {useNavigate} from 'react-router'
 import dayjs from 'dayjs'
 ```
 
 ### Type Imports Always Use `type` Keyword
 
 ```ts
-import { gql, type TypedDocumentNode } from '@apollo/client'
-import { type Post, NearbyPostType } from '@/graphql/types'
+import {gql, type TypedDocumentNode} from '@apollo/client'
+import {type Post, NearbyPostType} from '@/graphql/types'
 ```
 
 ---
@@ -408,16 +420,17 @@ Never use `text-sm`, `text-lg`, `text-xl`. Always use design system classes:
 Every color class includes a `dark:` variant.
 
 ```tsx
-className="text-dark-600 dark:text-gray-300"
-className="bg-true-white dark:bg-base-black"
-className="border-dark-100 dark:border-gray-800"
+className = 'text-dark-600 dark:text-gray-300'
+className = 'bg-true-white dark:bg-base-black'
+className = 'border-dark-100 dark:border-gray-800'
 ```
 
 ### Class Ordering: Layout → Visual → State → Responsive
 
 ```tsx
-className="relative flex w-full flex-col space-y-3 p-0 pb-20 md:mt-3 md:rounded-t-xl"
-className="bg-true-white dark:bg-base-black flex space-x-2 rounded-xl p-2"
+className =
+  'relative flex w-full flex-col space-y-3 p-0 pb-20 md:mt-3 md:rounded-t-xl'
+className = 'bg-true-white dark:bg-base-black flex space-x-2 rounded-xl p-2'
 ```
 
 ### Semantic Spacing Tokens
@@ -425,35 +438,43 @@ className="bg-true-white dark:bg-base-black flex space-x-2 rounded-xl p-2"
 Use `@theme` block tokens over arbitrary values. Common decimal spacings:
 
 ```tsx
-className="gap-y-1.5"
-className="px-1.75"
-className="h-5.5"
+className = 'gap-y-1.5'
+className = 'px-1.75'
+className = 'h-5.5'
 ```
 
 Only use arbitrary `[...]` when no semantic token exists:
 
 ```tsx
-className="h-[38px]"   // acceptable when no token available
+className = 'h-9.5' // acceptable when no token available
 ```
 
 ### Semantic Shadow Classes
 
 ```tsx
-className="shadow-1"   // not shadow-sm
-className="shadow-2"   // not shadow-md
+className = 'shadow-1' // not shadow-sm
+className = 'shadow-2' // not shadow-md
 ```
 
 ### Variant Functions (Never String Interpolation)
 
-Never build variant class strings via template literals like `` `text-${size}` ``. Always use explicit switch/lookup functions in `utils/helpers.ts`.
+Never build variant class strings via template literals like
+`` `text-${size}` ``. Always use explicit switch/lookup functions in
+`utils/helpers.ts`.
 
 ```ts
 // Correct:
 export function buttonSizes(size?: ButtonSizes): string {
   switch (size) {
-    case 'xs': { return 'h-7 px-2 text-label-xs' }
-    case 'sm': { return 'h-9 px-3 text-label-sm' }
-    default:   { return 'h-10 px-4 text-label-base' }
+    case 'xs': {
+      return 'h-7 px-2 text-label-xs'
+    }
+    case 'sm': {
+      return 'h-9 px-3 text-label-sm'
+    }
+    default: {
+      return 'h-10 px-4 text-label-base'
+    }
   }
 }
 
@@ -484,10 +505,7 @@ const onModalClose = useCallback(() => {
 ### Functional State Update Form
 
 ```tsx
-const nextPage = useCallback(
-  () => setCurrentStep((prev) => prev + 1),
-  [],
-)
+const nextPage = useCallback(() => setCurrentStep(prev => prev + 1), [])
 ```
 
 ### One Concern Per `useEffect`
@@ -506,29 +524,31 @@ useEffect(() => {
 
 ### `startTransition` for Non-Urgent State Updates
 
-Pagination, deferred rendering, and non-critical updates are wrapped in `startTransition`.
+Pagination, deferred rendering, and non-critical updates are wrapped in
+`startTransition`.
 
 ```tsx
 const onLoadMore = () => {
   startTransition(() => {
-    fetchMore({ variables: { page: nextPage } })
+    fetchMore({variables: {page: nextPage}})
   })
 }
 ```
 
 ### React Router — `useSuspenseQuery` Pattern at Route Level
 
-Route data is fetched with Suspense-compatible hooks. Loading is handled by `<Suspense>` boundaries outside the component.
+Route data is fetched with Suspense-compatible hooks. Loading is handled by
+`<Suspense>` boundaries outside the component.
 
 ```tsx
 // Route component
 export function RouteComponent() {
-  const { data } = useSuspenseQuery(QUERY, { variables })
+  const {data} = useSuspenseQuery(QUERY, {variables})
   return <PostsList posts={data.posts} />
 }
 
 // Parent wrapping with Suspense:
-<Suspense fallback={<Skeleton.Post />}>
+;<Suspense fallback={<Skeleton.Post />}>
   <RouteComponent />
 </Suspense>
 ```
@@ -547,7 +567,8 @@ type ModalType = 'login' | 'register'
 
 ### TypeScript Enums for Domain Values
 
-Use `enum` only when values represent a semantic domain (e.g., mapped from an external source).
+Use `enum` only when values represent a semantic domain (e.g., mapped from an
+external source).
 
 ```ts
 enum MediaType {
@@ -629,13 +650,14 @@ const handleSubmit = async () => {
 
 ### `error: unknown` in All Catch Blocks
 
-Never type catch errors as `any`. Always `error: unknown`, cast with `toErrorWithMessage`.
+Never type catch errors as `any`. Always `error: unknown`, cast with
+`toErrorWithMessage`.
 
 ### React Router Error Boundaries via `throw new Response`
 
 ```tsx
 if (isGraphQLError(error)) {
-  throw new Response(error.message, { status: 500 })
+  throw new Response(error.message, {status: 500})
 }
 ```
 
@@ -656,7 +678,7 @@ No inline loading spinners. Use `<Suspense>` with skeleton fallbacks.
 ### Spread `...rest` for Prop Forwarding
 
 ```tsx
-const InputText = ({ className, type = 'text', ...rest }: InputTextProps) => (
+const InputText = ({className, type = 'text', ...rest}: InputTextProps) => (
   <input className={clsxm('...')} type={type} {...rest} />
 )
 ```
@@ -675,12 +697,8 @@ value={options?.[0]}
 ### `lazy` + `Suspense` for Heavy Components
 
 ```tsx
-const NsfwContent = lazy(
-  () => import('@/components/post/nsfw-content'),
-)
-const PostCanvas = lazy(
-  () => import('@/components/canvas/post-canvas'),
-)
+const NsfwContent = lazy(() => import('@/components/post/nsfw-content'))
+const PostCanvas = lazy(() => import('@/components/canvas/post-canvas'))
 ```
 
 ### JSDoc on Public Component API (Single Line)
@@ -694,7 +712,8 @@ export const Button = ({ ... }: ButtonProps) => (...)
 
 ### Comments Are Sparse
 
-Only comment non-obvious logic. Never explain what the code does — only *why* when genuinely needed.
+Only comment non-obvious logic. Never explain what the code does — only _why_
+when genuinely needed.
 
 ### Helper Functions Are Pure and Live in `utils/helpers.ts`
 
@@ -702,8 +721,12 @@ Only comment non-obvious logic. Never explain what the code does — only *why* 
 // src/components/ui/button/utils/helpers.ts
 export function buttonVariants(variant?: ButtonVariants): string {
   switch (variant) {
-    case 'primary': { return '...' }
-    default: { return '...' }
+    case 'primary': {
+      return '...'
+    }
+    default: {
+      return '...'
+    }
   }
 }
 ```

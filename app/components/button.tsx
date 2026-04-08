@@ -1,6 +1,6 @@
-import type { ComponentPropsWithRef, ReactNode } from 'react'
+import type {ComponentPropsWithRef, ReactNode} from 'react'
 
-import { cn } from '~/lib/cn'
+import {cn} from '~/lib/cn'
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost'
 type ButtonSize = 'sm' | 'base' | 'lg'
@@ -37,13 +37,13 @@ const variantClasses: Record<ButtonVariant, string> = {
   secondary:
     'border border-border-strong hover:bg-surface hover:border-gray-600 active:bg-gray-800 active:border-gray-600 text-white',
   ghost:
-    'text-text-accent hover:bg-sage-950 hover:text-sage-300 active:bg-sage-900 active:text-sage-300',
+    'text-sage-400 hover:bg-sage-950 hover:text-sage-300 active:bg-sage-900 active:text-sage-300',
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
   sm: 'px-3 py-2 text-[13px] font-semibold leading-[19.5px] gap-1.5',
-  base: 'px-5 py-2 text-body',
-  lg: 'px-7 py-3 text-body',
+  base: 'px-5 py-2 text-button font-semibold leading-none',
+  lg: 'px-7 py-3 text-button font-semibold leading-none',
 }
 
 const Button = ({
@@ -73,5 +73,5 @@ const Button = ({
 
 Button.displayName = 'Button'
 
-export { Button }
+export {Button}
 export default Button

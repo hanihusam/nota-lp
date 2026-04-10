@@ -3,7 +3,7 @@ import HeroMockup from './mockups/hero-mockup'
 
 const Hero = () => {
   return (
-    <section className="pt-24 lg:pt-32 flex flex-col gap-16 items-center">
+    <section className="pt-39 flex flex-col gap-16 items-center">
       <div className="max-w-6xl mx-auto px-5 lg:px-0 w-full flex flex-col gap-8">
         <div className="flex flex-col gap-6 w-full">
           <div className="flex flex-col gap-4 max-w-full lg:max-w-146.25">
@@ -37,7 +37,7 @@ const Hero = () => {
       </div>
 
       {/* Desktop: full interactive mockup */}
-      <div className="hidden lg:flex w-full items-center justify-center">
+      <div className="hidden lg:flex lg:justify-center w-full">
         <HeroMockup />
       </div>
 

@@ -65,12 +65,20 @@
   --color-btn-primary-text: #ffffff;
 }
 
-@utility text-display {
+@utility text-display-1 {
   font-family: var(--font-serif);
   font-size: 64px;
   font-weight: 400;
   line-height: 74px;
   letter-spacing: 0;
+}
+
+@utility text-display-2 {
+  font-family: var(--font-serif);
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 64.4px;
+  letter-spacing: -0.32px;
 }
 
 @utility text-heading-1 {
@@ -79,6 +87,14 @@
   font-weight: 400;
   line-height: 43.2px;
   letter-spacing: -0.01em;
+}
+
+@utility text-heading-2 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0;
 }
 
 @utility text-body {
@@ -111,6 +127,15 @@
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0.01em;
+}
+
+@theme {
+  --animate-marquee: marquee 28s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 html,

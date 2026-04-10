@@ -1,6 +1,7 @@
 # Nota Landing Page
 
-A modern, high-performance landing page for Nota built with React Router v7, TypeScript, and TailwindCSS v4, deployed to Cloudflare Workers.
+A modern, high-performance landing page for Nota built with React Router v7,
+TypeScript, and TailwindCSS v4, deployed to Cloudflare Workers.
 
 ## Stack
 
@@ -82,8 +83,10 @@ public/
 
 Custom design tokens are defined in `app/app.css`:
 
-- **Colors:** Dark theme with sage accent (e.g., `bg-page`, `text-text-primary`, `bg-btn-primary`)
-- **Typography:** Semantic utility classes (`text-display`, `text-heading-1`, `text-body`, etc.)
+- **Colors:** Dark theme with sage accent (e.g., `bg-page`, `text-text-primary`,
+  `bg-btn-primary`)
+- **Typography:** Semantic utility classes (`text-display-1`, `text-heading-1`,
+  `text-body`, etc.)
 - **Spacing:** 4px baseline grid (space-1 → space-32)
 - **Layout:** 12-column grid, max-w-6xl container
 

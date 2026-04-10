@@ -19,7 +19,7 @@ const Navbar = () => {
         scrolled ? 'backdrop-blur-md bg-page/80' : 'bg-transparent'
       }`}
     >
-      <div className="max-w-6xl mx-auto py-5 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-5 lg:px-0 py-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-[20px] font-serif text-text-primary leading-7.5">
             nota

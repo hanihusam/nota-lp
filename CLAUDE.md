@@ -11,28 +11,35 @@ source of truth for how code should be written.
 - React Router v7 + TypeScript + TailwindCSS v4
 - Single page application. Index route at `app/routes/home.tsx`
 - Deployed to Cloudflare Workers
-- Fonts: Instrument Serif + Plus Jakarta Sans (loaded via Google Fonts in `app/root.tsx`)
+- Fonts: Instrument Serif + Plus Jakarta Sans (loaded via Google Fonts in
+  `app/root.tsx`)
 - `clsx` + `tailwind-merge` installed; `cn()` utility at `app/lib/cn.ts`
 
 ## Implementation Status
 
 **Done:**
-- ✅ Project setup (React Router v7, TypeScript, TailwindCSS v4, Cloudflare Workers)
+
+- ✅ Project setup (React Router v7, TypeScript, TailwindCSS v4, Cloudflare
+  Workers)
 - ✅ Coding patterns documented in STYLE.md
 - ✅ Design tokens defined below
 - ✅ Instrument Serif and Plus Jakarta Sans loaded in `app/root.tsx`
 - ✅ `cn()` utility (`clsx` + `tailwind-merge`) at `app/lib/cn.ts`
-- ✅ `Button` component with `primary`, `secondary`, `ghost` variants and `sm`/`base`/`lg` sizes
+- ✅ `Button` component with `primary`, `secondary`, `ghost` variants and
+  `sm`/`base`/`lg` sizes
 - ✅ `Navbar` — logo left, ghost CTA right, transparent with scroll blur
 - ✅ `Hero` — eyebrow + display heading + subline + 2 CTAs + `HeroMockup`
 - ✅ `ValueProps` — horizontal strip of 6 value props (caption style)
-- ✅ Feature sections (Proposal Editor, Client Management, Export & Share) inline in `home.tsx`
-- ✅ Mockup components: `HeroMockup`, `ProposalsMockup`, `ClientsMockup`, `ExportMockup`
+- ✅ Feature sections (Proposal Editor, Client Management, Export & Share)
+  inline in `home.tsx`
+- ✅ Mockup components: `HeroMockup`, `ProposalsMockup`, `ClientsMockup`,
+  `ExportMockup`
 - ✅ `TrustLine` — centered italic line
 - ✅ Bottom CTA section (inline in `home.tsx`)
 - ✅ `Footer` — copyright left, nav links right, divider above
 
 **To Do:**
+
 - Replace mockup components with real product screenshots in `public/images/`
 
 ## Design Tokens (from Figma)
@@ -121,30 +128,41 @@ public/
   favicon.ico
 ```
 
-**Note:** Feature sections (Proposal Editor, Client Management, Export & Share) and Bottom CTA are currently inlined in `home.tsx`. The `Feature.tsx` and `BottomCTA.tsx` components were not extracted as separate files.
+**Note:** Feature sections (Proposal Editor, Client Management, Export & Share)
+and Bottom CTA are currently inlined in `home.tsx`. The `Feature.tsx` and
+`BottomCTA.tsx` components were not extracted as separate files.
 
 ## Images
 
 Create `public/images/` directory and place product screenshots there.
 
 **Styling specs:**
-- Hero image: 12px radius, 1px border gray-800, sage-500 glow ellipse behind (blur), two shadows
+
+- Hero image: 12px radius, 1px border gray-800, sage-500 glow ellipse behind
+  (blur), two shadows
 - Feature images: 12px radius, 1px border gray-800, two shadows (no glow)
 - Use standard `<img>` tags with alt text
 
 ## Landing Page Sections (top to bottom)
 
-1. **Navbar** - Logo left, ghost CTA button right, transparent background with blur on scroll
-2. **Hero** - Eyebrow text + display heading + subheading + 2 CTA buttons + floating screenshot image
-3. **Value Props** - Horizontal strip with 6 value proposition items (caption style text)
-4. **Feature 1 (Editor)** - Text content left, product image right (alternating layout)
-5. **Feature 2 (Clients)** - Text content right, product image left (alternating layout)
-6. **Feature 3 (Export)** - Text content left, product image right (alternating layout)
+1. **Navbar** - Logo left, ghost CTA button right, transparent background with
+   blur on scroll
+2. **Hero** - Eyebrow text + display heading + subheading + 2 CTA buttons +
+   floating screenshot image
+3. **Value Props** - Horizontal strip with 6 value proposition items (caption
+   style text)
+4. **Feature 1 (Editor)** - Text content left, product image right (alternating
+   layout)
+5. **Feature 2 (Clients)** - Text content right, product image left (alternating
+   layout)
+6. **Feature 3 (Export)** - Text content left, product image right (alternating
+   layout)
 7. **Trust Line** - Single centered line of italic text
 8. **Bottom CTA** - Heading + primary button + supporting caption text
 9. **Footer** - Copyright text left, navigation links right, divider line above
 
 **Layout Grid:**
+
 - Container: max-w-6xl (1152px), centered
 - 12-column grid system
 - 24px gutters between columns
@@ -156,7 +174,8 @@ Create `public/images/` directory and place product screenshots there.
 
 1. Call `get_design_context` with the fileKey and nodeId
 2. Call `get_screenshot` for visual reference
-3. Adapt output to this project's conventions — do not use raw generated code verbatim
+3. Adapt output to this project's conventions — do not use raw generated code
+   verbatim
 4. Validate visually against the screenshot before marking done
 
 ### Token Mapping
@@ -165,69 +184,74 @@ Create `public/images/` directory and place product screenshots there.
 
 Semantic token classes (from `@theme` in `app/app.css`):
 
-| Figma token | Tailwind class | Hex |
-|---|---|---|
-| `background/primary` | `bg-page` | `#09090b` |
-| card/surface bg | `bg-surface` | `#18181b` |
-| `text/primary` | `text-text-primary` | `#ffffff` |
-| `text/secondary` | `text-text-secondary` | `#a1a1aa` |
-| `text/tertiary` | `text-text-tertiary` | `#71717a` |
-| text disabled | `text-text-disabled` | `#52525b` |
-| `text/accent` | `text-text-accent` | `#89a88e` |
-| `border/default` | `border-border` | `#27272a` |
-| `border/strong` | `border-border-strong` | `#3f3f46` |
-| `button/primary` | `bg-btn-primary` | `#6b8f71` |
-| button hover | `hover:bg-btn-primary-hover` | `#55795e` |
-| button pressed | `active:bg-btn-primary-pressed` | `#3f6348` |
+| Figma token          | Tailwind class                  | Hex       |
+| -------------------- | ------------------------------- | --------- |
+| `background/primary` | `bg-page`                       | `#09090b` |
+| card/surface bg      | `bg-surface`                    | `#18181b` |
+| `text/primary`       | `text-text-primary`             | `#ffffff` |
+| `text/secondary`     | `text-text-secondary`           | `#a1a1aa` |
+| `text/tertiary`      | `text-text-tertiary`            | `#71717a` |
+| text disabled        | `text-text-disabled`            | `#52525b` |
+| `text/accent`        | `text-text-accent`              | `#89a88e` |
+| `border/default`     | `border-border`                 | `#27272a` |
+| `border/strong`      | `border-border-strong`          | `#3f3f46` |
+| `button/primary`     | `bg-btn-primary`                | `#6b8f71` |
+| button hover         | `hover:bg-btn-primary-hover`    | `#55795e` |
+| button pressed       | `active:bg-btn-primary-pressed` | `#3f6348` |
 
 Primitive scale classes (for when you need a raw palette value):
 
-| Figma token | Tailwind class | Hex |
-|---|---|---|
+| Figma token      | Tailwind class                  | Hex       |
+| ---------------- | ------------------------------- | --------- |
 | `color/sage/400` | `text-sage-400` / `bg-sage-400` | `#89a88e` |
 | `color/sage/500` | `text-sage-500` / `bg-sage-500` | `#6b8f71` |
-| `color/sage/600` | `bg-sage-600` | `#55795e` |
-| `color/sage/700` | `bg-sage-700` | `#3f6348` |
-| `color/sage/900` | `bg-sage-900` | `#1a2f20` |
-| `color/gray/800` | `border-gray-800` | `#27272a` |
-| `color/gray/700` | `border-gray-700` | `#3f3f46` |
+| `color/sage/600` | `bg-sage-600`                   | `#55795e` |
+| `color/sage/700` | `bg-sage-700`                   | `#3f6348` |
+| `color/sage/900` | `bg-sage-900`                   | `#1a2f20` |
+| `color/gray/800` | `border-gray-800`               | `#27272a` |
+| `color/gray/700` | `border-gray-700`               | `#3f3f46` |
 
-**Typography — use semantic utility classes from `app/app.css`, never generic Tailwind sizes:**
+**Typography — use semantic utility classes from `app/app.css`, never generic
+Tailwind sizes:**
 
-| Figma token | CSS utility |
-|---|---|
-| `display-1` (64px, serif, 400) | `text-display` |
-| `heading-1` (36px, serif, 400) | `text-heading-1` |
-| `paragraph` (18px, sans, 500) | `text-body` |
-| `paragraph-sm` (15px, sans, 500) | `text-body-sm` |
-| `caption` (13px, sans, 600) | `text-caption` |
-| button text (15px, sans, 600) | `text-button` |
+| Figma token                      | CSS utility      |
+| -------------------------------- | ---------------- |
+| `display-1` (64px, serif, 400)   | `text-display-1` |
+| `heading-1` (36px, serif, 400)   | `text-heading-1` |
+| `paragraph` (18px, sans, 500)    | `text-body`      |
+| `paragraph-sm` (15px, sans, 500) | `text-body-sm`   |
+| `caption` (13px, sans, 600)      | `text-caption`   |
+| button text (15px, sans, 600)    | `text-button`    |
 
-IMPORTANT: Never use `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl`, etc. Always use the semantic classes above.
+IMPORTANT: Never use `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl`,
+etc. Always use the semantic classes above.
 
 **Fonts:**
+
 - `font/family/title` (Instrument Serif) → `font-serif`
 - `font/family/body` (Plus Jakarta Sans) → `font-sans`
 
 **Spacing — Figma space tokens map 1:1 to Tailwind defaults:**
 
-| Figma | px | Tailwind |
-|---|---|---|
-| `space/1` | 4px | `p-1`, `gap-1`, etc. |
-| `space/2` | 8px | `p-2`, `gap-2`, etc. |
-| `space/3` | 12px | `p-3` |
-| `space/4` | 16px | `p-4` |
-| `space/6` | 24px | `p-6` |
-| `space/8` | 32px | `p-8` |
-| `space/24` | 96px | `p-24` |
-| `space/32` | 128px | `p-32` |
+| Figma      | px    | Tailwind             |
+| ---------- | ----- | -------------------- |
+| `space/1`  | 4px   | `p-1`, `gap-1`, etc. |
+| `space/2`  | 8px   | `p-2`, `gap-2`, etc. |
+| `space/3`  | 12px  | `p-3`                |
+| `space/4`  | 16px  | `p-4`                |
+| `space/6`  | 24px  | `p-6`                |
+| `space/8`  | 32px  | `p-8`                |
+| `space/24` | 96px  | `p-24`               |
+| `space/32` | 128px | `p-32`               |
 
 ### Component Conventions (Landing Page Specific)
 
-- Components are flat in `app/components/`, PascalCase filenames (e.g. `Hero.tsx`)
+- Components are flat in `app/components/`, PascalCase filenames (e.g.
+  `Hero.tsx`)
 - Named `const` arrow functions with `.displayName` set immediately after
 - Named exports (no default exports for section components)
-- `clsx` + `tailwind-merge` are installed — use `cn()` from `~/lib/cn` for dynamic class merging
+- `clsx` + `tailwind-merge` are installed — use `cn()` from `~/lib/cn` for
+  dynamic class merging
 - Forward a `className` prop for composability when it makes sense
 - No barrel `index.ts` needed for this flat structure
 
@@ -236,12 +260,16 @@ IMPORTANT: Never use `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl`, e
 - All components are dark-only — no `dark:` variants needed
 - Container: `max-w-6xl mx-auto px-6` (desktop), override with `px-5` on mobile
 - The `sage-*` color scale is defined in `app/app.css` `@theme` block
-- Hero image: `rounded-[12px] border border-gray-800` + glow + two `drop-shadow` values
-- Feature images: `rounded-[12px] border border-gray-800` + two `drop-shadow` values (no glow)
+- Hero image: `rounded-[12px] border border-gray-800` + glow + two `drop-shadow`
+  values
+- Feature images: `rounded-[12px] border border-gray-800` + two `drop-shadow`
+  values (no glow)
 
 ### Asset Handling
 
-- IMPORTANT: If Figma MCP returns a `localhost` image source, use it directly as `src`
-- IMPORTANT: Do not install icon libraries — use inline SVG from the Figma payload
+- IMPORTANT: If Figma MCP returns a `localhost` image source, use it directly as
+  `src`
+- IMPORTANT: Do not install icon libraries — use inline SVG from the Figma
+  payload
 - Product screenshots live in `public/images/`
 - Use standard `<img>` tags with descriptive `alt` text

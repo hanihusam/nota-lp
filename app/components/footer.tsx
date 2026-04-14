@@ -8,8 +8,8 @@ const Footer = () => {
           <span className="font-serif italic">nota</span>
         </div>
         <div className="flex items-center gap-6">
-          <a href="#" className="hover:text-text-secondary transition-colors">Privacy</a>
-          <a href="#" className="hover:text-text-secondary transition-colors">Support</a>
+          <a href="#" className="[@media(hover:hover)]:hover:text-text-secondary transition-colors motion-reduce:transition-none">Privacy</a>
+          <a href="#" className="[@media(hover:hover)]:hover:text-text-secondary transition-colors motion-reduce:transition-none">Support</a>
         </div>
       </div>
     </footer>

@@ -15,7 +15,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter] duration-200 ease-in-out motion-reduce:transition-none ${
         scrolled ? 'backdrop-blur-md bg-page/80' : 'bg-transparent'
       }`}
     >

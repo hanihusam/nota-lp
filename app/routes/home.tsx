@@ -9,14 +9,33 @@ import ProposalsMockup from '~/components/mockups/proposals-mockup'
 import ClientsMockup from '~/components/mockups/clients-mockup'
 import ExportMockup from '~/components/mockups/export-mockup'
 
+const SITE_URL = 'https://nota.app'
+const SITE_TITLE = 'Nota — Proposal Software for Modern Teams'
+const SITE_DESCRIPTION =
+  'Create beautiful proposals in minutes, deliver them instantly, and track every interaction. Nota makes it simple to win more clients.'
+
 export function meta({}: Route.MetaArgs) {
   return [
-    {title: 'Nota - Proposal Software for Modern Teams'},
-    {
-      name: 'description',
-      content:
-        'Create beautiful proposals in minutes, deliver them instantly, and track every interaction. Nota makes it simple to win more clients.',
-    },
+    {title: SITE_TITLE},
+    {name: 'description', content: SITE_DESCRIPTION},
+    {name: 'robots', content: 'index, follow'},
+
+    // Open Graph
+    {property: 'og:type', content: 'website'},
+    {property: 'og:url', content: SITE_URL},
+    {property: 'og:title', content: SITE_TITLE},
+    {property: 'og:description', content: SITE_DESCRIPTION},
+    {property: 'og:image', content: `${SITE_URL}/og-image.png`},
+    {property: 'og:image:width', content: '1200'},
+    {property: 'og:image:height', content: '630'},
+    {property: 'og:site_name', content: 'Nota'},
+    {property: 'og:locale', content: 'en_US'},
+
+    // Twitter Card
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:title', content: SITE_TITLE},
+    {name: 'twitter:description', content: SITE_DESCRIPTION},
+    {name: 'twitter:image', content: `${SITE_URL}/og-image.png`},
   ]
 }
 

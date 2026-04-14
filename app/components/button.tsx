@@ -33,11 +33,11 @@ function ArrowRightIcon() {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-btn-primary hover:bg-btn-primary-hover active:bg-btn-primary-pressed text-white',
+    'bg-btn-primary [@media(hover:hover)]:hover:bg-btn-primary-hover active:bg-btn-primary-pressed text-white',
   secondary:
-    'border border-border-strong hover:bg-surface hover:border-gray-600 active:bg-gray-800 active:border-gray-600 text-white',
+    'border border-border-strong [@media(hover:hover)]:hover:bg-surface [@media(hover:hover)]:hover:border-gray-600 active:bg-gray-800 active:border-gray-600 text-white',
   ghost:
-    'text-sage-400! hover:bg-sage-950 hover:text-sage-300 active:bg-sage-900 active:text-sage-300',
+    'text-sage-400! [@media(hover:hover)]:hover:bg-sage-950 [@media(hover:hover)]:hover:text-sage-300 active:bg-sage-900 active:text-sage-300',
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -57,7 +57,7 @@ const Button = ({
   return (
     <button
       className={cn(
-        'rounded-lg inline-flex items-center gap-2 transition-colors',
+        'rounded-lg inline-flex items-center gap-2 transition active:scale-[0.97] motion-reduce:active:scale-100',
         variantClasses[variant],
         sizeClasses[size],
         className,

@@ -14,7 +14,7 @@ const ValueProps = () => {
     <section className="py-16 lg:py-24 w-full">
       {/* Mobile: scrolling marquee */}
       <div className="lg:hidden overflow-hidden">
-        <div className="flex items-center animate-marquee hover:[animation-play-state:paused]">
+        <div className="flex items-center animate-marquee [@media(hover:hover)]:hover:[animation-play-state:paused] motion-reduce:animate-none">
           {track.map((item, i) => (
             <div key={i} className="flex items-center gap-6 shrink-0">
               <p className="text-caption text-text-secondary whitespace-nowrap pl-6">{item}</p>

@@ -17,7 +17,7 @@ export const SIGN_END: SignScene = {drawn: true, name: 'Sarah Mitchell', agreed:
 
 /** The Accept and sign card on its own: the payoff of step 03, and its compact design. */
 export const SignCard = ({s, compact}: {s: SignScene; compact?: boolean}) => (
-  <div className="pui-sign">
+  <div className="pui-sign" style={compact ? {marginTop: 0} : undefined}>
     <span className="pui-sign__title">Accept and sign</span>
     {compact ? null : <span className="pui-sign__hint">Draw your signature, or type your name.</span>}
     <div className="pui-pad">

@@ -156,6 +156,28 @@ function RollNow({
     const id = setTimeout(() => (el.style.width = `${next}px`), 360)
     return () => clearTimeout(id)
   }, [view.key, reduced, reduced ? children : undefined])
+  // A web font that arrives after the first measure widens the text, and the
+  // box would clip it at the fallback font's width. Re-measure a settled box.
+  useEffect(() => {
+    const fonts = typeof document === 'undefined' ? undefined : document.fonts
+    if (!fonts) return
+    let live = true
+    const resync = () => {
+      const el = mid.current
+      const text = el?.querySelector<HTMLElement>('[data-live]')
+      if (!live || !el || !text || el.querySelector('[data-out]')) return
+      el.style.transition = 'none'
+      el.style.width = `${parseFloat(getComputedStyle(text).width) || 0}px`
+      void el.offsetWidth
+      el.style.transition = ''
+    }
+    fonts.ready.then(resync)
+    fonts.addEventListener('loadingdone', resync)
+    return () => {
+      live = false
+      fonts.removeEventListener('loadingdone', resync)
+    }
+  }, [])
   // The settled render must not wait for an effect: a Stage poster can
   // arrive in the same commit that disables its CSS animations.
   const { text, head, tail, old, key, numeric } = reduced

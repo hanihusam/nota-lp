@@ -3,6 +3,23 @@
 Coding patterns and conventions used in this codebase. Use as a reference when
 writing new code.
 
+## This project
+
+This guide was written for a larger app. Where it and the landing page
+differ, these rules win:
+
+- **Exports:** named exports for every component; default exports only for
+  route modules (`app/routes/*`), which React Router requires.
+- **Class merging:** `cn()` from `~/lib/cn` (clsx + tailwind-merge) wherever
+  the guide says `clsxm`.
+- **Theme:** dark only. Use Token classes with no `dark:` variants.
+- **Structure:** sections are files in `app/components/`, with a folder only
+  when a section has parts (`hero/`, `how-it-works/`, `bento/`, `product/`).
+- **Data and errors:** the page is static. It has no queries, toasts or
+  loading states; the error boundary is in `app/root.tsx`.
+- **Product pictures:** faux app UI is plain CSS in `product.css` and the
+  section's own sheet, sized in px, scoped under the stage's class.
+
 ---
 
 ## Table of Contents

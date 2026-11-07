@@ -1,0 +1,453 @@
+/* Bento pictures. Each tile picture is its own Stageshow Stage at 1:1;
+   these rules are scoped under .bento-stage (the Stage's class) or the
+   picture's own root class. */
+
+.bento-stage .ss-stage {
+  overflow: hidden;
+}
+
+.bento-card {
+  border-radius: 12px;
+  border: 1px solid var(--color-border-glass);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-float);
+  overflow: hidden;
+  font: 500 15px/1.4 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+/* ── Totals ─────────────────────────────────────────── */
+.bento-totals {
+  position: absolute;
+  inset: 0;
+}
+.bento-totals .bento-card {
+  position: absolute;
+  left: 32px;
+  top: 20px;
+  width: min(560px, calc(100% - 160px));
+}
+.bento-row {
+  display: grid;
+  grid-template-columns: 1fr 56px 56px 88px;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.bento-row__num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.bento-row--head {
+  font: 600 13px/1.5 var(--font-sans);
+  color: var(--color-text-tertiary);
+}
+.bento-row[data-fresh] {
+  background: var(--color-sage-950);
+  color: var(--color-text-primary);
+}
+.bento-row--filler {
+  padding-block: 15px;
+}
+.bento-row--filler > :not(:first-child) {
+  justify-self: end;
+}
+.bento-total {
+  position: absolute;
+  top: 222px;
+  left: calc(32px + min(560px, 100% - 160px) - 90px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 20px 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-glass);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-float);
+}
+.bento-total__label {
+  font: 600 13px/1.5 var(--font-sans);
+  color: var(--color-text-tertiary);
+}
+.bento-total__amount {
+  font: 400 40px/1.1 var(--font-serif);
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+}
+
+/* Narrow tile: drop Hours and Rate, satellite moves to the lower right */
+.bento-totals[data-narrow] .bento-card {
+  left: 24px;
+  width: calc(100% - 24px);
+}
+.bento-totals[data-narrow] .bento-row {
+  grid-template-columns: 1fr 88px;
+}
+.bento-totals[data-narrow] [data-wide] {
+  display: none;
+}
+.bento-totals[data-narrow] .bento-total {
+  left: auto;
+  right: 16px;
+  top: auto;
+  bottom: 20px;
+}
+.bento-totals[data-narrow] .bento-total__amount {
+  font-size: 32px;
+}
+
+/* ── Keyboard ───────────────────────────────────────── */
+.bento-palette {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+}
+.bento-palette .bento-card {
+  position: absolute;
+  top: 20px;
+  width: min(560px, calc(100% - 48px));
+}
+.bento-palette__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 16px 20px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.bento-palette__query {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  white-space: nowrap;
+  font: 500 17px/1.4 var(--font-sans);
+  color: var(--color-text-primary);
+}
+.bento-palette__caret {
+  width: 1.5px;
+  height: 20px;
+  margin-left: 1px;
+  background: var(--color-sage-400);
+  animation: bento-caret 1s steps(1) infinite;
+}
+@keyframes bento-caret {
+  50% {
+    opacity: 0;
+  }
+}
+.bento-palette__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+}
+.bento-palette__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  white-space: nowrap;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition:
+    background-color 150ms ease,
+    scale 150ms ease-out;
+}
+.bento-palette__item--filler {
+  padding-block: 17px;
+}
+.bento-palette__item[data-selected] {
+  background: var(--color-surface-glass-hover);
+}
+.bento-palette__item[data-pressed] {
+  background: rgb(107 143 113 / 0.18);
+  scale: 0.99;
+}
+.bento-palette__meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text-tertiary);
+  opacity: 0;
+  translate: -4px 0;
+  transition:
+    opacity 250ms var(--ease-standard),
+    translate 250ms var(--ease-standard);
+  white-space: nowrap;
+}
+.bento-palette__meta[data-show] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* ── Offline rings ──────────────────────────────────── */
+.bento-rings {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-bottom: 32px;
+}
+.bento-rings__ring,
+.bento-rings__core {
+  grid-area: 1 / 1;
+}
+.bento-rings__ring {
+  width: var(--size);
+  height: var(--size);
+  border-radius: 999px;
+  border: 1px solid var(--color-border-glass);
+  background: rgb(255 255 255 / 0.025);
+}
+.bento-rings__core {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-glass);
+  background: var(--color-sage-900);
+  color: var(--color-sage-400);
+}
+.bento-rings__status {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  translate: -50% 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-glass);
+  background: var(--color-surface-raised);
+  font: 600 13px/1.5 var(--font-sans);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* Rings pulse outward once, innermost first, when the tile is revealed */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] .bento-rings__ring {
+    opacity: 0;
+  }
+  .js [data-reveal][data-revealed] .bento-rings__ring {
+    animation: ring-pulse 900ms var(--ease-standard) both;
+    animation-delay: calc(400ms + var(--i) * 120ms);
+  }
+}
+
+/* ── Client auto-fill ───────────────────────────────── */
+.bento-client {
+  position: absolute;
+  inset: 0;
+}
+.bento-client__card {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  top: 20px;
+}
+.bento-client__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.bento-client__label {
+  font: 500 13px/1.4 var(--font-sans);
+  color: var(--color-text-tertiary);
+}
+.bento-client__field .bento-palette__query {
+  min-height: 24px;
+}
+.bento-client__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  transition:
+    background-color 200ms ease,
+    opacity 200ms ease;
+}
+.bento-client__row[data-selected] {
+  background: var(--color-surface-glass-hover);
+}
+.bento-client__row[data-dim] {
+  opacity: 0.5;
+}
+.bento-client__avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--color-gray-800);
+  font: 600 12px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+.bento-client__avatar[data-tone='accent'] {
+  background: var(--color-sage-900);
+  color: var(--color-sage-400);
+}
+.bento-client__name {
+  display: block;
+  color: var(--color-text-primary);
+}
+.bento-client__org {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+.bento-client__filled {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-glass);
+  background: var(--ss-raised);
+  box-shadow: var(--shadow-float);
+  opacity: 0;
+  translate: 0 8px;
+  transition:
+    opacity 400ms var(--ease-standard),
+    translate 600ms var(--ease-standard);
+}
+.bento-client__filled[data-show] {
+  opacity: 1;
+  translate: 0 0;
+}
+.bento-client__detail {
+  display: grid;
+  grid-template-columns: 12px 44px auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  white-space: nowrap;
+  opacity: 0.25;
+  transition: opacity 250ms ease;
+}
+.bento-client__detail[data-on] {
+  opacity: 1;
+}
+
+/* ── Branded PDF ────────────────────────────────────── */
+.bento-pdf {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.bento-pdf__sheet {
+  position: absolute;
+  left: calc(50% - 116px);
+  top: 24px;
+  width: 232px;
+  height: 310px;
+  border-radius: 4px;
+  background: var(--color-gray-50);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.3),
+    0 24px 48px rgb(0 0 0 / 0.5);
+  transform-origin: 50% 100%;
+  transition: rotate var(--duration-frame) var(--ease-out-cubic);
+}
+.bento-pdf__sheet--back {
+  background: var(--color-gray-200);
+  rotate: 7deg;
+  translate: 28px 0;
+}
+.bento-pdf__sheet--front {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 22px;
+  rotate: -3deg;
+  color: var(--color-gray-500);
+  font: 500 9px/1.4 var(--font-sans);
+}
+.bento-pdf__studio {
+  font: italic 400 15px/1.2 var(--font-serif);
+  color: var(--color-sage-700);
+}
+.bento-pdf__title {
+  margin-top: 14px;
+  font: 400 30px/1.1 var(--font-serif);
+  color: var(--color-gray-950);
+}
+.bento-pdf__for {
+  margin-top: 6px;
+}
+.bento-pdf__rule {
+  height: 1px;
+  margin-block: 12px;
+  background: var(--color-gray-200);
+}
+.bento-pdf__line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.bento-pdf__line > span {
+  height: 5px;
+  border-radius: 3px;
+  background: var(--color-gray-300);
+}
+.bento-pdf__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.bento-pdf__amount {
+  font: 400 18px/1 var(--font-serif);
+  color: var(--color-gray-950);
+}
+.bento-pdf__chip {
+  position: absolute;
+  left: 20px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-glass);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-float);
+  font: 600 14px/1.4 var(--font-sans);
+  transition:
+    opacity 500ms var(--ease-standard),
+    translate 600ms var(--ease-standard);
+}
+.bento-pdf__chip-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--color-gray-800);
+  color: var(--color-icon-primary);
+}
+
+/* The sheets fan out from square and the chip arrives, once, on reveal */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal]:not([data-revealed]) .bento-pdf__sheet {
+    rotate: 0deg;
+  }
+  .js [data-reveal] .bento-pdf__sheet {
+    transition-delay: 250ms;
+  }
+  .js [data-reveal]:not([data-revealed]) .bento-pdf__chip {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  .js [data-reveal] .bento-pdf__chip {
+    transition-delay: 650ms;
+  }
+}

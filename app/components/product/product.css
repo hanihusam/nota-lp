@@ -1,0 +1,757 @@
+/*
+ * Nota's own app, drawn as faux product UI inside Stageshow stages.
+ * Everything is scoped under .nota-stage, the class every product Stage
+ * takes, and sized in px because stages draw at 1:1 and scale as a whole.
+ * Figma: 03 — Landing page → Landing (Hero, How it works, step panels).
+ */
+
+.nota-stage .ss-stage {
+  --ss-canvas: var(--color-gray-950);
+  --ss-surface: var(--color-gray-900);
+  --ss-raised: #141417;
+  --ss-chrome: var(--color-gray-900);
+  --ss-accent: var(--color-sage-500);
+  --ss-accent-soft: rgb(107 143 113 / 0.2);
+  --ss-accent-text: var(--color-sage-400);
+  --ss-text: var(--color-gray-400);
+  --ss-text-strong: #fff;
+  --ss-text-faint: var(--color-gray-500);
+  --ss-line: rgb(255 255 255 / 0.07);
+  --ss-line-faint: rgb(255 255 255 / 0.05);
+  --ss-font: var(--font-sans);
+  --ss-radius-window: 12px;
+  --ss-shadow-float: var(--shadow-float);
+  background: transparent;
+  overflow: hidden;
+  font: 500 14px/1.4 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+/* ── Shared atoms ─────────────────────────────────────── */
+.nota-stage .pui-serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  color: var(--color-text-primary);
+}
+.nota-stage .pui-wordmark {
+  font: 400 22px/1 var(--font-serif);
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+.nota-stage .pui-caption {
+  font: 500 12px/1.5 var(--font-sans);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.nota-stage .pui-icon {
+  flex: none;
+  color: var(--color-icon-secondary);
+}
+
+.nota-stage .pui-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font: 500 12px/1 var(--font-sans);
+  white-space: nowrap;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+.nota-stage .pui-badge[data-status='draft'] {
+  background: var(--color-gray-800);
+  color: var(--color-text-secondary);
+}
+.nota-stage .pui-badge[data-status='sent'] {
+  background: var(--color-sage-900);
+  color: var(--color-sage-400);
+}
+.nota-stage .pui-badge[data-status='signed'],
+.nota-stage .pui-badge[data-status='paid'] {
+  background: var(--color-sage-500);
+  color: #fff;
+}
+.nota-stage .pui-badge[data-size='sm'] {
+  height: 16px;
+  padding: 0 6px;
+  font-size: 10px;
+}
+.nota-stage .pui-badge--block {
+  background: var(--color-sage-900);
+  color: var(--color-sage-400);
+}
+
+/* Kit Button restyled as Nota's: 32px, 8px radius, page type */
+.nota-stage .ss-button {
+  font-family: var(--font-sans);
+}
+.nota-stage .pui-btn {
+  height: 32px;
+  padding-inline: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.nota-stage .pui-btn[data-variant='secondary'] {
+  background: var(--color-gray-950);
+  box-shadow: inset 0 0 0 1px var(--color-border-default);
+  color: var(--color-text-primary);
+}
+.nota-stage .pui-btn[data-variant='primary'] {
+  background: var(--color-sage-500);
+  color: #fff;
+}
+.nota-stage .pui-btn[data-variant='primary'][data-hover] {
+  background: var(--color-sage-600);
+}
+
+.nota-stage .pui-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 999px;
+  background: var(--color-sage-700);
+  color: #fff;
+  font: 600 12px/1 var(--font-sans);
+}
+
+/* ── Card + line items (editor, How it works, bento) ──── */
+.nota-stage .pui-card {
+  border-radius: 12px;
+  border: 1px solid rgb(39 39 42 / 0.6);
+  background: var(--color-gray-900);
+}
+.nota-stage .pui-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding-inline: 20px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.nota-stage .pui-link {
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-sage-400);
+}
+
+.nota-stage .pui-items__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 56px 56px 88px;
+  align-items: center;
+  gap: 8px;
+  height: 45px;
+  padding-inline: 20px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+.nota-stage .pui-items__row > :last-child {
+  color: var(--color-text-primary);
+}
+.nota-stage .pui-items__row--head {
+  height: 44px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-items__row--head > :last-child {
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-items__row[data-fresh] {
+  height: 48px;
+  background: var(--color-sage-950);
+  color: var(--color-text-primary);
+}
+.nota-stage .pui-items__service {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.nota-stage .pui-items[data-narrow] .pui-items__row {
+  grid-template-columns: minmax(0, 1fr) 88px;
+}
+.nota-stage .pui-items[data-narrow] [data-wide] {
+  display: none;
+}
+
+.nota-stage .pui-totals {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  row-gap: 6px;
+  padding: 16px 20px 18px;
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-totals > :nth-child(even) {
+  justify-self: end;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.nota-stage .pui-totals__total {
+  align-self: end;
+  color: var(--color-text-primary);
+  padding-bottom: 4px;
+}
+.nota-stage .pui-totals__amount {
+  font: 400 40px/1.1 var(--font-serif);
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+}
+
+/* ── Hero app window ─────────────────────────────────── */
+.nota-stage .pui-app {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 1152px;
+  height: 720px;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-gray-950);
+  box-shadow: var(--shadow-window);
+}
+.nota-stage .pui-app__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding-inline: 20px;
+  border-bottom: 1px solid rgb(39 39 42 / 0.5);
+  background: var(--color-gray-900);
+}
+.nota-stage .pui-app__lead,
+.nota-stage .pui-app__actions,
+.nota-stage .pui-app__crumb {
+  display: flex;
+  align-items: center;
+}
+.nota-stage .pui-app__lead {
+  gap: 24px;
+}
+.nota-stage .pui-app__actions {
+  gap: 8px;
+}
+.nota-stage .pui-app__crumb {
+  gap: 8px;
+  color: var(--color-text-secondary);
+}
+.nota-stage .pui-app__tabs {
+  display: flex;
+  gap: 2px;
+}
+.nota-stage .pui-app__tab {
+  position: relative;
+  padding: 6px 12px;
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-app__tab[data-active] {
+  color: var(--color-text-primary);
+}
+.nota-stage .pui-app__tab[data-active]::after {
+  content: '';
+  position: absolute;
+  inset: auto 12px -13px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-sage-500);
+}
+.nota-stage .pui-app__rule {
+  width: 1px;
+  height: 16px;
+  background: var(--color-border-default);
+}
+.nota-stage .pui-app__me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 4px;
+  padding-left: 12px;
+  border-left: 1px solid var(--color-border-default);
+  color: var(--color-icon-secondary);
+}
+.nota-stage .pui-app__body {
+  display: flex;
+  height: calc(100% - 56px);
+}
+.nota-stage .pui-app__side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 240px;
+  flex: none;
+  padding: 12px;
+  border-right: 1px solid rgb(39 39 42 / 0.5);
+  background: var(--color-gray-900);
+}
+.nota-stage .pui-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding-inline: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-default);
+  background: rgb(39 39 42 / 0.5);
+  color: var(--color-text-disabled);
+  font-size: 13px;
+}
+.nota-stage .pui-app__side .pui-btn {
+  width: 100%;
+  justify-content: center;
+}
+.nota-stage .pui-app__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-inline: -4px;
+}
+.nota-stage .pui-app__list .pui-caption {
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--color-text-disabled);
+}
+.nota-stage .pui-app__item {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  column-gap: 8px;
+  row-gap: 4px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.nota-stage .pui-app__item[data-active] {
+  background: var(--color-sage-900);
+}
+.nota-stage .pui-app__item-name {
+  grid-column: 2 / 4;
+  color: var(--color-text-secondary);
+}
+.nota-stage .pui-app__item[data-active] .pui-app__item-name,
+.nota-stage .pui-app__item[data-active] .pui-icon {
+  color: var(--color-sage-400);
+}
+.nota-stage .pui-app__item-client {
+  grid-column: 2;
+  font-size: 12px;
+  color: var(--color-text-disabled);
+}
+.nota-stage .pui-app__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 140px 0;
+}
+.nota-stage .pui-app__client {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px;
+}
+.nota-stage .pui-app__name {
+  font-size: 28px;
+  line-height: 1.2;
+}
+.nota-stage .pui-app__project-title {
+  font-size: 22px;
+  line-height: 1.4;
+}
+.nota-stage .pui-app__email {
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-app__meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+.nota-stage .pui-app__meta > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding-inline: 12px;
+  border-radius: 8px;
+  background: rgb(39 39 42 / 0.4);
+}
+.nota-stage .pui-app__meta-label {
+  display: block;
+  font-size: 11px;
+  color: var(--color-text-disabled);
+}
+.nota-stage .pui-app__meta-value {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+.nota-stage .pui-app__project {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+}
+.nota-stage .pui-app__project-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nota-stage .pui-app__edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-text-disabled);
+}
+
+/* ── Editor window (How it works 01 and 02) ───────────── */
+.nota-stage .pui-editor {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-gray-950);
+  box-shadow: var(--shadow-window);
+}
+.nota-stage .pui-editor__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  padding: 0 12px 0 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--color-gray-900);
+}
+.nota-stage .pui-editor__header .pui-wordmark {
+  font-size: 18px;
+}
+.nota-stage .pui-editor__title {
+  color: var(--color-text-secondary);
+}
+.nota-stage .pui-editor__spacer {
+  flex: 1;
+}
+.nota-stage .pui-editor__body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 32px 32px 0;
+}
+.nota-stage .pui-editor__client {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.nota-stage .pui-editor__client .pui-serif {
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.nota-stage .pui-filler {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px 24px;
+}
+
+/* ── Send dialog (02) ────────────────────────────────── */
+.nota-stage .pui-dialog {
+  width: 438px;
+  padding: 20px;
+  --ss-popover-bg: var(--color-gray-900);
+  --ss-popover-shadow: 0 0 0 1px var(--color-border-strong), 0 24px 64px rgb(0 0 0 / 0.6);
+  border-radius: 14px;
+}
+.nota-stage .pui-dialog__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  color: var(--color-text-primary);
+}
+.nota-stage .pui-dialog__box {
+  border-radius: 8px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-gray-950);
+}
+.nota-stage .pui-dialog__to {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 8px 0 12px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px 0 3px;
+  border-radius: 999px;
+  background: var(--color-gray-800);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+.nota-stage .pui-chip .pui-avatar {
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+}
+.nota-stage .pui-chip__faint {
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-dialog__message {
+  margin-top: 12px;
+  padding: 10px 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+.nota-stage .pui-dialog__toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 13px;
+}
+.nota-stage .pui-dialog__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nota-stage .pui-dialog__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-dialog__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nota-stage .pui-notice {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 12px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-glass);
+  background: var(--ss-raised);
+  box-shadow: var(--shadow-float);
+  opacity: 0;
+  translate: 0 8px;
+  transition:
+    opacity 400ms var(--ease-standard),
+    translate 600ms var(--ease-standard);
+}
+.nota-stage .pui-notice[data-show] {
+  opacity: 1;
+  translate: 0 0;
+}
+.nota-stage .pui-notice__title {
+  display: block;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+.nota-stage .pui-notice__meta {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+/* ── Client signing page (03) ────────────────────────── */
+.nota-stage .pui-browser {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-gray-950);
+  box-shadow: var(--shadow-window);
+}
+.nota-stage .pui-browser__bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 48px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--color-gray-900);
+}
+.nota-stage .pui-browser__lights {
+  display: flex;
+  gap: 6px;
+}
+.nota-stage .pui-browser__lights > span {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--color-gray-700);
+}
+.nota-stage .pui-browser__url {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  margin-right: 50px;
+  border-radius: 8px;
+  background: var(--color-gray-950);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+.nota-stage .pui-page {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 36px 0;
+}
+.nota-stage .pui-page__title {
+  margin-top: 6px;
+  font-size: 34px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.nota-stage .pui-page__meta {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-sign {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--color-sage-700);
+  background: var(--color-gray-900);
+}
+.nota-stage .pui-sign__title {
+  color: var(--color-text-primary);
+}
+.nota-stage .pui-sign__hint {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-pad {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 76px;
+  border-radius: 8px;
+  background: var(--color-gray-800);
+}
+.nota-stage .pui-sign .pui-pad {
+  height: 74px;
+  margin-top: 14px;
+}
+.nota-stage .pui-sign__fields {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: 12px;
+  margin-top: 16px;
+}
+.nota-stage .pui-field__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+.nota-stage .pui-field__box {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding-inline: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-gray-950);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.nota-stage .pui-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+.nota-stage .pui-check__box {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 1px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border-strong);
+  color: #fff;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+.nota-stage .pui-check__box svg {
+  opacity: 0;
+  scale: 0.6;
+  transition:
+    opacity 150ms ease,
+    scale 200ms var(--ease-standard);
+}
+.nota-stage .pui-check__box[data-on] {
+  border-color: var(--color-sage-500);
+  background: var(--color-sage-500);
+}
+.nota-stage .pui-check__box[data-on] svg {
+  opacity: 1;
+  scale: 1;
+}
+.nota-stage .pui-sign .pui-btn {
+  width: 100%;
+  margin-top: 14px;
+  justify-content: center;
+}
+.nota-stage .pui-sign__audit {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+/* ── The ink signature ───────────────────────────────── */
+.pui-ink {
+  display: block;
+  color: var(--color-sage-400);
+}
+.pui-ink path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.01;
+}
+.pui-ink[data-drawn] path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--d) cubic-bezier(0.45, 0, 0.55, 1) var(--at);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pui-ink[data-drawn] path {
+    transition: none;
+  }
+}

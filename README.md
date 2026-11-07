@@ -1,14 +1,17 @@
 # Nota Landing Page
 
-A modern, high-performance landing page for Nota built with React Router v7,
-TypeScript, and TailwindCSS v4, deployed to Cloudflare Workers.
+The marketing site for Nota: write a proposal, send it as a link, and get it
+signed in the browser. React Router v7, TypeScript and Tailwind v4, deployed to
+Cloudflare Workers. Designed in Figma and built to match it; see `docs/`.
 
 ## Stack
 
 - **Framework:** React Router v7 with TypeScript
 - **Styling:** TailwindCSS v4 with custom design tokens
 - **Deployment:** Cloudflare Workers
-- **Fonts:** Inter, Instrument Serif, Plus Jakarta Sans
+- **Fonts:** Instrument Serif, Plus Jakarta Sans
+- **Product pictures:** a vendored copy of the Stageshow faux-UI kit
+- **Motion:** CSS and IntersectionObserver, no animation library
 
 ## Getting Started
 
@@ -59,38 +62,25 @@ npx wrangler versions deploy
 
 ```
 app/
-  root.tsx              # Root layout — loads Google Fonts
-  app.css               # Global styles, design tokens, semantic utility classes
-  routes/
-    home.tsx            # Landing page composition
+  root.tsx                 # Document, fonts, error boundary
+  app.css                  # Tokens (@theme), text utilities, entrances, reveals
+  routes/home.tsx          # The page: section order mirrors Figma
   components/
-    button.tsx          # Button component (primary/secondary/ghost)
-    navbar.tsx          # Top navigation
-    hero.tsx            # Hero section
-    value-props.tsx     # Value propositions strip
-    trust-line.tsx      # Trust quote line
-    footer.tsx          # Footer
-    mockups/            # SVG/JSX product mockup components
-  lib/
-    cn.ts               # cn() utility (clsx + tailwind-merge)
-workers/
-  app.ts                # Cloudflare Workers handler
-public/
-  favicon.ico
+    navbar.tsx, audience.tsx, pricing.tsx, faq.tsx, final-cta.tsx, footer.tsx
+    hero/                  # Hero copy and the signing story
+    how-it-works/          # Pinned chapter, stacked layout, story beats
+    bento/                 # Features grid and its five pictures
+    product/               # Nota's app UI for the pictures (window, editor, signing page)
+    ui/                    # Button, Icon, Kbd, Section Heading, Spotlight Card
+    motion/                # RevealObserver
+  lib/                     # site.ts (copy, links, price), icons.ts, stageshow.ts, cn.ts
+  vendor/stageshow/        # Faux-UI kit (MIT), treated as a dependency
+docs/
+  figma.md                 # Frames, node IDs, section → file map
+  design-system.md         # Tokens and type
+  motion.md                # How the page moves
+  research/                # Motion and pricing studies
 ```
-
-## Design Tokens
-
-Custom design tokens are defined in `app/app.css`:
-
-- **Colors:** Dark theme with sage accent (e.g., `bg-page`, `text-text-primary`,
-  `bg-btn-primary`)
-- **Typography:** Semantic utility classes (`text-display-1`, `text-heading-1`,
-  `text-body`, etc.)
-- **Spacing:** 4px baseline grid (space-1 → space-32)
-- **Layout:** 12-column grid, max-w-6xl container
-
-See `CLAUDE.md` for complete token reference and component conventions.
 
 ## Contributing
 

@@ -1,0 +1,97 @@
+/* Hero stage. Scoped under .hero-stage (the Stage's class) and .hero-figure. */
+
+.hero-figure {
+  /* Room for the Signed card to straddle the window's right edge: up to
+     144px into the page margin, never closer than 32px to the viewport */
+  --sat: clamp(0px, (100vw - 1152px) / 2 - 32px, 144px);
+  width: calc(100% + var(--sat));
+}
+
+.hero-glow {
+  position: absolute;
+  inset: -96px 12% auto;
+  height: 280px;
+  background: radial-gradient(50% 50% at 50% 70%, var(--color-glow-accent), transparent 70%);
+  filter: blur(40px);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Settles from a slight tilt as it scrolls into place. Scrubbed, so linear
+   with no duration; off the main thread where scroll timelines exist. */
+@keyframes hero-flatten {
+  from {
+    transform: perspective(1600px) rotateX(8deg) scale(0.96);
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (width >= 64rem) {
+    .hero-tilt {
+      transform-origin: 50% 0;
+      animation: hero-flatten linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}
+
+.hero-stage .hero-window {
+  position: absolute;
+  inset: 0;
+}
+.hero-stage .hero-window .pui-app {
+  -webkit-mask-image: linear-gradient(to bottom, #000 320px, transparent 600px);
+  mask-image: linear-gradient(to bottom, #000 320px, transparent 600px);
+}
+
+/* Compact: under the app header, cropped to the proposal card */
+.hero-stage .hero-window[data-layout='compact'] .pui-app {
+  left: -362px;
+  top: -76px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 300px, transparent 470px);
+  mask-image: linear-gradient(to bottom, #000 300px, transparent 470px);
+}
+
+.hero-stage .hero-signed {
+  position: absolute;
+  left: 996px;
+  top: 196px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 300px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-glass);
+  background: var(--ss-raised);
+  box-shadow: var(--shadow-float);
+  opacity: 0;
+  translate: 0 12px;
+  transition:
+    opacity 500ms var(--ease-standard),
+    translate 700ms var(--ease-standard);
+}
+.hero-stage .ss-stage[data-layout='compact'] .hero-signed {
+  left: 0;
+  top: 252px;
+  width: min(100%, 360px);
+}
+.hero-stage .hero-signed[data-show] {
+  opacity: 1;
+  translate: 0 0;
+}
+.hero-stage .hero-signed__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-stage .hero-signed__audit {
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-stage .hero-signed {
+    translate: 0 0;
+    transition: opacity 200ms ease;
+  }
+}

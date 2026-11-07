@@ -75,7 +75,7 @@ export const StepPicture = ({step}: {step: number}) => {
     return (
       <Stage<EditorScene>
         {...WIDE}
-        compact={{below: 560, width: 350, height: 312}}
+        compact={{below: 560, width: 350, height: 332}}
         theme="dark"
         play="once"
         startAt={0.5}
@@ -105,7 +105,7 @@ export const StepPicture = ({step}: {step: number}) => {
   return (
     <Stage<SignScene>
       {...WIDE}
-      compact={{below: 560, width: 350, height: 388}}
+      compact={{below: 560, width: 350, height: 376}}
       theme="dark"
       play="once"
       startAt={0.5}

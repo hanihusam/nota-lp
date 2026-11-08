@@ -15,3 +15,7 @@ Nota's own Tailwind-styled mockups can render inside a `Stage` unchanged.
 Local change 4: `Stage` takes `startAt` (0 to 1), the visible share at which a
 script starts, so a story begins once the visitor can see it rather than on its
 first pixel (docs/research/motion-study.md).
+
+Local change 5: `Roll` re-measures its settled width when web fonts finish
+loading. On a first visit it measured the fallback font, and its clip cut the
+last letters of button labels ("New Proposa").

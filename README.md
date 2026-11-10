@@ -85,3 +85,10 @@ docs/
 ## Contributing
 
 Follow the coding patterns and conventions documented in `STYLE.md`.
+
+## License
+
+The code is MIT licensed (see `LICENSE`). The vendored Stageshow kit keeps its
+own MIT license in `app/vendor/stageshow/LICENSE`. The Figma file is shared on
+Figma Community under CC BY 4.0. The Nota name and wordmark are not covered by
+either license.

@@ -2,12 +2,15 @@
 
 File: [Nota Landing Page](https://www.figma.com/design/BHPXqrDP5CGpYB3C6G1xP9/Nota-Landing-Page)
 (key `BHPXqrDP5CGpYB3C6G1xP9`). Laid out for Figma Community; the "00 — Read
-me" page explains it to visitors.
+me" page explains it to visitors. Landing v1 and v2 were taken out before
+publishing; restore them from the file's version history (autosave of
+November 7, 2026).
 
 ## Where things are
 
 | Page | Node | What |
 | --- | --- | --- |
+| Cover | `454:61` | Community thumbnail, 1920×1080 |
 | 00 — Read me | `500:2` | What the file is, how to play the prototype, changelog |
 | 01 — Foundations | `397:99` | Color and type, drawn from the variables in `design-system.md` |
 | 02 — Components | `0:1` | Navbar, Footer, Section Heading, Step Item, Accordion Item, Button, icons, product UI parts, the How it works chapter set `483:1049` |
@@ -17,7 +20,6 @@ me" page explains it to visitors.
 | 03 — Landing page | `532:761` | Prototype components: the sets the prototype plays (below) |
 | 04 — Motion | `397:100` | Motion principles, tokens and specs; entrances and reveals; the Figma Motion stories: hero `523:56`, steps `486:879`, `486:942`, `486:1038` |
 | 05 — Social | `499:412` | OG image, exported to `public/og-image.png` |
-| 99 — Archive | `25:252` | Landing v1 and v2, kept for comparison |
 
 Desktop sections: Navbar `459:231`, Hero `459:232`, Audience `459:558`,
 How it works `459:567`, Features `459:717`, Pricing `468:379`, FAQ `459:869`,

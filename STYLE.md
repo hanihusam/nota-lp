@@ -20,8 +20,8 @@ differ, these rules win:
   `dashboard/`).
 - **Data and errors:** the landing page is static. It has no queries, toasts
   or loading states; the error boundary is in `app/root.tsx`. The `/app`
-  prototype keeps click state in `sessionStorage`, shows one toast, and has
-  its own error boundary on the detail route.
+  prototype keeps click state in `sessionStorage`, shows toasts with Sonner,
+  and has its own error boundary on the detail route.
 - **Product pictures:** faux app UI is plain CSS in `product.css` and the
   section's own sheet, sized in px, scoped under the stage's class.
 

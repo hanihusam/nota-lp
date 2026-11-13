@@ -159,7 +159,8 @@
 
 .strip { display: flex; flex-direction: column; gap: 12px; }
 .strip__bar { display: flex; gap: 2px; height: 6px; }
-.strip__seg { min-width: 2px; flex-basis: 0; border-radius: 2px; background: var(--mark); }
+.strip__seg { min-width: 2px; flex-basis: 0; border-radius: 2px; background: var(--mark); transition: opacity 150ms ease; }
+.strip__seg[data-muted] { opacity: 0.3; }
 .strip__filters { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
 [data-status='draft'] { --mark: var(--color-status-draft-mark); }
 [data-status='sent'] { --mark: var(--color-status-sent-mark); }
@@ -181,6 +182,10 @@
 
 /* Toolbar and bulk bar */
 .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 32px; }
+/* Toolbar and bulk bar share a slot: the one leaving sinks 4px and fades, the one arriving rises */
+.toolbar-swap { position: relative; display: grid; }
+.toolbar-swap > .toolbar { grid-area: 1 / 1; transition: opacity 200ms var(--ease-standard), translate 200ms var(--ease-standard); }
+.toolbar-swap > .toolbar[inert] { position: absolute; inset: 0 0 auto; opacity: 0; translate: 0 4px; transition-duration: 150ms; }
 .search {
   display: flex; align-items: center; gap: 8px; width: 320px; height: 32px; padding: 0 10px;
   border-radius: 8px; background: var(--color-background-secondary); color: var(--color-icon-secondary);
@@ -265,6 +270,9 @@
 .chip[data-tone='accent'] { background: var(--color-surface-accent-subtle); color: var(--color-text-accent); }
 .chip[data-tone='attention'] { background: var(--color-status-attention-surface); color: var(--color-status-attention-text); }
 .chip[data-tone='danger'] { background: var(--color-status-danger-surface); color: var(--color-status-danger-text); }
+/* A chip that changes label in place: Motion sets its width, the inner box carries the padding */
+.chip--swap { padding: 0; overflow: hidden; }
+.chip__in { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px 3px 6px; }
 
 /* The journey line */
 .journey { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
@@ -335,11 +343,11 @@
 .tip__action:hover { text-decoration: underline; text-underline-offset: 3px; }
 .tip__sent { display: flex; align-items: center; gap: 6px; color: var(--color-text-accent); animation: dash-swap 200ms ease; }
 
-/* Toast */
-.dash-toast { position: fixed; left: 50%; bottom: 24px; z-index: 60; translate: -50% 0; pointer-events: none; }
-.dash-toast__body {
-  padding: 10px 14px; border-radius: 8px; background: var(--color-background-tertiary); color: var(--color-text-primary);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.32); animation: dash-rise 200ms cubic-bezier(0.19, 1, 0.22, 1);
+/* Toasts: Sonner places, stacks and animates them; this is only their look */
+.nota-app .dash-toast {
+  display: flex; align-items: center; width: var(--width); max-width: calc(100vw - 32px); padding: 10px 14px;
+  border-radius: 8px; background: var(--color-background-tertiary); color: var(--color-text-primary);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.32);
 }
 
 /* Proposal detail */
@@ -393,7 +401,8 @@
 .doc-card__chevron { rotate: -90deg; color: var(--color-icon-secondary); }
 
 .rail { display: flex; flex-direction: column; gap: 28px; min-width: 0; }
-.callout { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 10px; }
+.callout { border-radius: 10px; }
+.callout__in { display: flex; flex-direction: column; gap: 8px; padding: 16px; }
 .callout[data-tone='attention'] { background: var(--color-status-attention-surface); }
 .callout[data-tone='attention'] .callout__head { color: var(--color-status-attention-text); }
 .callout[data-tone='neutral'] { background: var(--color-background-secondary); box-shadow: inset 0 0 0 1px var(--color-border-default); }
@@ -402,7 +411,6 @@
 .callout[data-tone='danger'] { background: var(--color-status-danger-surface); }
 .callout[data-tone='danger'] .callout__head { color: var(--color-status-danger-text); }
 .callout__head { display: flex; align-items: center; gap: 8px; }
-.callout__head[data-enter] { animation: dash-swap 200ms ease; }
 .callout__actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
 .rail__section { display: flex; flex-direction: column; gap: 14px; padding-top: 20px; border-top: 1px solid var(--color-border-default); }
 .rail__heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
@@ -443,8 +451,37 @@
 .reminders__text .t-caption { color: var(--color-text-secondary); }
 
 @keyframes dash-fade { from { opacity: 0; } }
-@keyframes dash-rise { from { opacity: 0; translate: 0 8px; } }
 @keyframes dash-swap { from { opacity: 0; filter: blur(2px); } }
+
+/* Motion helpers (motion.tsx). The leaving copy is popped out of flow, so the wrapper holds its place. */
+.swap, .swap__item { position: relative; display: inline-flex; align-items: center; gap: inherit; }
+/* Count and words sit in one line of text, spaced by the space, not a flex gap */
+.toolbar__nudge .swap__item { display: inline; }
+.roll { position: relative; display: inline-flex; overflow: hidden; font-variant-numeric: tabular-nums; }
+.auto-height { overflow: hidden; }
+
+/* State colours ease once the page is live, so a reminder or an extension fades the amber out
+   instead of snapping. Off before that, so restoring stored state on load doesn't animate. */
+.nota-app[data-live] :is(.seg__lead, .stop, .wait__marker, .chip, .callout, .callout__head, .tl__line, .tl__text > :first-child),
+.nota-app[data-live] .seg::before {
+  transition: background-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+}
+:root[data-nota-switching] .nota-app :is(*, *::before, *::after) { transition: none !important; }
+
+/* Copy link: the icon swaps (Motion), the labels share one cell so the button keeps its width */
+.copy__icon { position: relative; display: grid; place-items: center; width: 14px; height: 14px; }
+.copy__label { display: grid; }
+.copy__label > span { grid-area: 1 / 1; opacity: 0; filter: blur(2px); transition: opacity 150ms ease, filter 150ms ease; }
+.copy__label > span[data-on] { opacity: 1; filter: blur(0); }
+
+/* List ↔ detail: the clicked proposal's title and amount travel, everything else crossfades.
+   Images keep their natural size, so text slides and reveals instead of stretching. */
+.detail__title h1 { view-transition-name: proposal-title; }
+.detail__value { view-transition-name: proposal-amount; }
+::view-transition-group(*) { animation-duration: 250ms; animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1); }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 150ms; }
+::view-transition-old(proposal-title), ::view-transition-new(proposal-title) { height: 100%; object-fit: none; object-position: left top; }
+::view-transition-old(proposal-amount), ::view-transition-new(proposal-amount) { height: 100%; object-fit: none; object-position: right top; }
 
 /* Tablet: compact rows, the detail column moves under the preview */
 @media (width < 80rem) {
@@ -507,6 +544,11 @@
   .nota-app .tip { translate: -50% 0; scale: 1; transition: opacity 150ms ease, visibility 0s linear 150ms; }
   .nota-app .tip[data-open] { translate: -50% 0; scale: 1; transition: opacity 150ms ease, visibility 0s; }
   .nota-app .btn:active { scale: 1; }
-  .nota-app .dash-toast__body { animation: dash-fade 150ms ease; }
-  .nota-app .tip__sent, .nota-app .callout__head[data-enter] { animation: dash-fade 150ms ease; }
+  .nota-app .tip__sent { animation: dash-fade 150ms ease; }
+  .nota-app .toolbar-swap > .toolbar { translate: none; }
+  /* Only the page crossfade is left; nothing travels */
+  .nota-app .row__title, .nota-app .row__value, .detail__title h1, .detail__value { view-transition-name: none !important; }
 }
+
+/* Opening the next tooltip while one is open: no transition either way */
+:root .nota-app .tip[data-instant] { transition: none; }

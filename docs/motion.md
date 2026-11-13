@@ -13,7 +13,8 @@ The prototype). A change to a story's beats belongs in both.
 - **No JavaScript on scroll.** State that depends on scroll (the navbar, the
   pinned chapter's step) comes from IntersectionObservers; scrubbed effects
   are CSS scroll-driven animations behind `@supports (animation-timeline: …)`.
-  There are no scroll listeners and no animation library.
+  There are no scroll listeners and no animation library on the landing
+  page. The `/app` prototype uses Motion for React (`dashboard.md`).
 - **Reveal once.** Nothing replays on scroll-up. Product stories hold their
   final frame.
 - **Transform and opacity.** Scrubbed and entering motion animates only

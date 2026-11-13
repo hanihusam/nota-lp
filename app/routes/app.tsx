@@ -1,5 +1,6 @@
 import {Outlet} from 'react-router'
 
+import {MotionRoot} from '~/components/dashboard/motion'
 import {AppShell} from '~/components/dashboard/shell'
 import {DashboardProvider, PREFS_SCRIPT} from '~/components/dashboard/state'
 import '~/components/dashboard/dashboard.css'
@@ -20,11 +21,13 @@ export default function AppLayout() {
   return (
     <>
       <script dangerouslySetInnerHTML={{__html: PREFS_SCRIPT}} />
-      <DashboardProvider>
-        <AppShell>
-          <Outlet />
-        </AppShell>
-      </DashboardProvider>
+      <MotionRoot>
+        <DashboardProvider>
+          <AppShell>
+            <Outlet />
+          </AppShell>
+        </DashboardProvider>
+      </MotionRoot>
     </>
   )
 }

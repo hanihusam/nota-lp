@@ -1,5 +1,5 @@
 import {useEffect, useMemo, useState} from 'react'
-import {Link, useNavigate, useSearchParams} from 'react-router'
+import {Link, useNavigate, useSearchParams, useViewTransitionState} from 'react-router'
 
 import {Icon} from '~/components/ui/icon'
 import type {Proposal} from '~/lib/dashboard/data'
@@ -17,7 +17,8 @@ import {
 } from '~/lib/dashboard/format'
 import type {IconName} from '~/lib/icons'
 
-import {Chip, Journey, Money, isSettled, nudgeChip, statusChip} from './journey'
+import {Chip, Journey, Money, SwapChip, isSettled, nudgeChip, statusChip} from './journey'
+import {Roll, Swap} from './motion'
 import {useDashboard, usePreference} from './state'
 
 /**
@@ -91,6 +92,14 @@ export const ProposalsPage = () => {
       else next.add(id)
       return next
     })
+  // The bar keeps showing the last selection while it fades out.
+  const picked = all.filter((p) => selected.has(p.id))
+  const pickedKey = picked.map((p) => p.id).join(' ')
+  const [bulk, setBulk] = useState({key: '', proposals: picked, reminded})
+  if (picked.length > 0 && (pickedKey !== bulk.key || reminded !== bulk.reminded)) setBulk({key: pickedKey, proposals: picked, reminded})
+  const bulkOn = picked.length > 0
+  const nudgeLabel = attention === 0 ? 'None need a nudge' : `${formatCount(attention)} ${attention === 1 ? 'needs' : 'need'} a nudge`
+
   const allOnPage = rows.length > 0 && rows.every((p) => selected.has(p.id))
   const someOnPage = rows.some((p) => selected.has(p.id))
 
@@ -140,7 +149,13 @@ export const ProposalsPage = () => {
       <section className="strip" aria-label="Filter by status">
         <div className="strip__bar" aria-hidden>
           {STATUS_ORDER.filter((s) => ledger.byStatus[s].value > 0).map((s) => (
-            <span key={s} className="strip__seg" data-status={s} style={{flexGrow: ledger.byStatus[s].value}} />
+            <span
+              key={s}
+              className="strip__seg"
+              data-status={s}
+              data-muted={(status && status !== s) || undefined}
+              style={{flexGrow: ledger.byStatus[s].value}}
+            />
           ))}
         </div>
         <div className="strip__filters">
@@ -169,17 +184,18 @@ export const ProposalsPage = () => {
         </div>
       </section>
 
-      {selected.size > 0 ? (
+      <div className="toolbar-swap">
         <BulkBar
-          proposals={all.filter((p) => selected.has(p.id))}
+          proposals={bulk.proposals}
+          reminded={bulk.reminded}
+          off={!bulkOn}
           onClear={() => setSelected(new Set())}
           onRemind={(ids, note) => {
             remind(ids, note)
             setSelected(new Set())
           }}
         />
-      ) : (
-        <div className="toolbar">
+        <div className="toolbar" inert={bulkOn}>
           <label className="search">
             <Icon name="magnifying-glass" size={14} />
             <span className="visually-hidden">Search proposals</span>
@@ -195,10 +211,19 @@ export const ProposalsPage = () => {
             type="button"
             className="btn btn--secondary t-ui toolbar__nudge"
             aria-pressed={nudgeOnly}
+            aria-label={nudgeLabel}
             onClick={() => setParam('nudge', nudgeOnly ? null : '1')}
           >
             <Icon name="exclamation-triangle" size={14} className="toolbar__nudge-icon" />
-            {attention === 0 ? 'None need a nudge' : `${formatCount(attention)} ${attention === 1 ? 'needs' : 'need'} a nudge`}
+            <Swap id={attention === 0 ? 'none' : 'some'}>
+              {attention === 0 ? (
+                nudgeLabel
+              ) : (
+                <>
+                  <Roll value={attention}>{formatCount(attention)}</Roll> {attention === 1 ? 'needs' : 'need'} a nudge
+                </>
+              )}
+            </Swap>
           </button>
           <span className="toolbar__count t-caption" aria-live="polite">
             {formatCount(filtered.length)} of {formatCount(all.length)}, newest activity first
@@ -223,7 +248,7 @@ export const ProposalsPage = () => {
             ))}
           </div>
         </div>
-      )}
+      </div>
 
       <div className="table" key={swaps} data-swapped={swaps > 0 || undefined}>
         <div className="table__head t-caption">
@@ -299,6 +324,9 @@ const Row = ({p, dataset, selected, onSelect}: {p: Proposal; dataset: string | n
   const {reminded, extended, toast} = useDashboard()
   const navigate = useNavigate()
   const href = `/app/proposals/${p.id}${dataset ? `?data=${dataset}` : ''}`
+  // Only the row going to (or coming back from) its detail page carries the
+  // names, so its title and amount travel and the rest of the page crossfades.
+  const travels = useViewTransitionState(href)
   const status = statusChip(p)
   const nudge = nudgeChip(p, reminded, extended)
   return (
@@ -310,7 +338,7 @@ const Row = ({p, dataset, selected, onSelect}: {p: Proposal; dataset: string | n
       onClick={(e) => {
         if ((e.target as HTMLElement).closest('a, button, input, label')) return
         if (window.getSelection()?.toString()) return
-        navigate(href)
+        navigate(href, {viewTransition: true})
       }}
     >
       <label className="row__select" onClick={(e) => e.stopPropagation()}>
@@ -318,7 +346,13 @@ const Row = ({p, dataset, selected, onSelect}: {p: Proposal; dataset: string | n
         <span className="visually-hidden">Select {p.title}</span>
       </label>
       <div className="row__proposal">
-        <Link to={href} className="row__title t-body-strong" title={p.title}>
+        <Link
+          to={href}
+          viewTransition
+          className="row__title t-body-strong"
+          title={p.title}
+          style={travels ? {viewTransitionName: 'proposal-title'} : undefined}
+        >
           {p.title}
         </Link>
         <span className="row__client t-caption" title={p.client}>
@@ -326,7 +360,7 @@ const Row = ({p, dataset, selected, onSelect}: {p: Proposal; dataset: string | n
         </span>
         {nudge ? (
           <span className="row__chips">
-            <Chip tone={nudge.tone} icon={nudge.icon}>{nudge.label}</Chip>
+            <SwapChip tone={nudge.tone} icon={nudge.icon}>{nudge.label}</SwapChip>
           </span>
         ) : null}
       </div>
@@ -334,7 +368,7 @@ const Row = ({p, dataset, selected, onSelect}: {p: Proposal; dataset: string | n
       <Journey p={p} compact className="row__progress" />
       <div className="row__status">
         {nudge ? (
-          <Chip tone={nudge.tone} icon={nudge.icon}>{nudge.label}</Chip>
+          <SwapChip tone={nudge.tone} icon={nudge.icon}>{nudge.label}</SwapChip>
         ) : (
           <span className="row__status-chip">
             <Chip tone={status.tone} icon={status.icon}>{status.label}</Chip>
@@ -342,7 +376,7 @@ const Row = ({p, dataset, selected, onSelect}: {p: Proposal; dataset: string | n
         )}
       </div>
       <span className="row__last t-caption">{p.lastActivity}</span>
-      <span className="row__value">
+      <span className="row__value" style={travels ? {viewTransitionName: 'proposal-amount'} : undefined}>
         <Money amount={p.amount} currency={p.currency} maxChars={17} />
       </span>
       <button type="button" className="row__more" aria-label={`More actions for ${p.title}`} onClick={() => toast('Row actions are not part of this prototype.')}>
@@ -354,8 +388,16 @@ const Row = ({p, dataset, selected, onSelect}: {p: Proposal; dataset: string | n
 
 Row.displayName = 'Row'
 
-const BulkBar = ({proposals, onClear, onRemind}: {proposals: Proposal[]; onClear: () => void; onRemind: (ids: string[], note: string) => void}) => {
-  const {reminded, toast} = useDashboard()
+interface BulkBarProps {
+  proposals: Proposal[]
+  reminded: ReadonlySet<string>
+  off: boolean
+  onClear: () => void
+  onRemind: (ids: string[], note: string) => void
+}
+
+const BulkBar = ({proposals, reminded, off, onClear, onRemind}: BulkBarProps) => {
+  const {toast} = useDashboard()
   const eligible = proposals.filter((p) => canRemind(p) && !reminded.has(p.id))
   const skipped = proposals.filter((p) => !eligible.includes(p))
   const why = (p: Proposal) =>
@@ -373,7 +415,7 @@ const BulkBar = ({proposals, onClear, onRemind}: {proposals: Proposal[]; onClear
         ? `${skipped[0].title} ${why(skipped[0])}.`
         : `${skipped.length} of these can't get a reminder: drafts, signed, expired or already reminded.`
   return (
-    <div className="toolbar bulk" role="region" aria-label="Selected proposals">
+    <div className="toolbar bulk" role="region" aria-label="Selected proposals" inert={off}>
       <span className="t-body-strong">{proposals.length} selected</span>
       <button type="button" className="btn btn--ghost t-ui" onClick={onClear}>
         Clear

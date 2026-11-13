@@ -52,6 +52,9 @@ made-up data only, and is `noindex`.
 - Code: `app/components/dashboard/`, `app/lib/dashboard/`, `app/routes/app*.tsx`.
 - Styles are plain CSS in `dashboard.css`, scoped under `.nota-app`, with
   its own light mode. Colors still come from tokens in `app.css`.
+- Motion is Motion for React (`m.*` under `LazyMotion`) and Sonner, both
+  only under `/app`. Nothing animates on page load; see the Motion section
+  of `docs/dashboard.md` before adding any.
 - Test changes with `?data=stress` and at 1440, 900 and 390 wide.
 
 ## Open decisions (the owner's)

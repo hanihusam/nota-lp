@@ -46,8 +46,10 @@ only has the filtered empty state.
 - `lib/dashboard/format.ts`: money (`moneyParts`), counts, status
   mapping, the ledger, and expiry dates (`extendExpiry`, `swapExpiry`,
   `waitedAfterExtend`).
-- `components/dashboard/state.tsx`: reminders sent, expiries extended, the
-  toast, and the theme/density preferences.
+- `components/dashboard/state.tsx`: reminders sent, expiries extended,
+  toasts (Sonner), and the theme/density preferences.
+- `components/dashboard/motion.tsx`: the shared motion pieces (`Swap`,
+  `Roll`, `AutoHeight`, `useMeasure`) and their transitions.
 - `components/dashboard/shell.tsx`: concept banner, top bar, theme toggle.
 - `components/dashboard/dashboard.css`: all styles, scoped under `.nota-app`.
 
@@ -82,15 +84,41 @@ prefix they win and the tablet grid never applies.
 
 ## Motion
 
-From the handoff's motion table: row hover 100ms; tooltip opens after a 300ms
-hover in 150ms `cubic-bezier(0.19, 1, 0.22, 1)` and closes in 100ms; "sent"
-states crossfade with a 2px blur over 200ms; the density switch crossfades in
-150ms. Reduced motion keeps the fades and drops movement and blur.
+The handoff's motion table plus a pass against Emil Kowalski's animations.dev
+rules. Every animation answers something the person did, and how often they
+do it sets how much it moves. Motion for React and Sonner load only under
+`/app`; the landing page has no animation library.
 
-Animations that confirm a click play only for a click, never on page load:
-the table fades only after a density change (`data-swapped`), and the callout
-head animates only when it mounts after the stored state has been restored
-(`useEnters`, which reads `live` from the provider).
+| Moment | What moves | How | Code |
+| --- | --- | --- | --- |
+| Send a reminder (list) | The nudge chip crossfades to "Reminder sent just now" and eases to its new width; the line, marker and stops ease from amber to green; "3 need a nudge" rolls to 2 | Spring 300ms, no bounce, 2px blur; colours 200ms `ease` | `SwapChip`, `Roll`, `[data-live]` CSS |
+| Send a reminder or Extend (detail) | Your event grows into the timeline and the items below move down; the callout eases to its new height and colour while its text crossfades; changed dates crossfade | Height 270ms `[0.25, 1, 0.5, 1]`; text as above | `TimelineItem`, `AutoHeight`, `Swap` |
+| List → detail and back | The clicked row's title and amount travel to the header; the rest crossfades | View Transitions through React Router's `viewTransition`: 250ms `cubic-bezier(0.25, 1, 0.5, 1)`, page crossfade 150ms | `Row`, `dashboard.css` |
+| Toasts | Stack, exit, swipe away, pause on hover | Sonner, styled with tokens | `state.tsx` |
+| Selecting rows | The toolbar and bulk bar swap: the one leaving sinks 4px and fades in 150ms, the one arriving rises in 200ms | CSS transitions, so a quick select/clear reverses smoothly | `.toolbar-swap` |
+| Copy link | The icon turns into a check and the label into Copied for 2s; the button keeps its width | Spring 300ms, scale from 0.25 with blur | `CopyLink` |
+| Wait-marker tooltips | Open after a 300ms hover in 150ms `cubic-bezier(0.19, 1, 0.22, 1)`, close in 100ms. Once one is open, the next opens at once with no animation, and only one is open | CSS plus a module-level group | `WaitMarker` |
+| Status filter | The other value-bar segments dim to 30% | 150ms `ease` | `.strip__seg` |
+| Density switch | The table crossfades | 150ms | `.table[data-swapped]` |
+| Button press, row hover | Scale 0.97; background | 150ms; 100ms | `.btn`, `.row` |
+
+Left still on purpose: search and filter results (they follow typing, many
+times a day), pagination, the reading bars and value bar on load (seen on
+every visit), the density layout (morphing 25 rows would stretch the text),
+and the theme switch, which repaints at once: `data-nota-switching` turns
+transitions off for two frames so coloured elements don't trail the page.
+
+- **Nothing animates on load.** Stored reminders arrive in an effect, so
+  Motion transitions stay instant until the provider is `live`
+  (`useSwapTransition`, `useHeightTransition`), colour transitions apply only
+  under `.nota-app[data-live]`, and every `AnimatePresence` starts with
+  `initial={false}`.
+- **Reduced motion is gentler, not zero.** `MotionConfig reducedMotion="user"`
+  drops transforms and keeps fades; height changes are instant; nothing
+  travels between pages, only the crossfade; the toolbar swap only fades;
+  Sonner follows the setting itself.
+- **Size.** `LazyMotion` with `domAnimation` and the `m.*` components
+  (`strict`), so a full `motion.*` import fails loudly.
 
 ## Gotchas
 
@@ -103,6 +131,13 @@ head animates only when it mounts after the stored state has been restored
   first. Closed tooltips are `visibility: hidden` so Tab skips their button.
 - **Focus rings** follow each control's own radius; the global
   `:focus-visible` rule sets none, except 4px on text links.
+- **Crossfades pop the old copy out of flow** (`mode="popLayout"`), so the
+  wrapper (`.swap`, `.roll`) must be positioned and the copy can't rely on a
+  flex gap for word spacing (`.toolbar__nudge .swap__item` is inline).
+- **Testing exits.** Slowing animations with DevTools' playback rate (CDP
+  `Animation.setPlaybackRate`) is fine for looking at a middle frame, but
+  Motion's exiting copies stay in the DOM afterwards. Check that exits finish
+  at normal speed. The in-app browser pane freezes animations while hidden.
 
 ## Checked
 
@@ -110,5 +145,12 @@ In the browser pane, against the Figma frames: desktop 1440 detailed and
 compact, light and dark; tablet 1100, 900 and 768; phone 390; the stress set
 on desktop and phone; reminder and extend on the list and the detail, and
 after a reload; keyboard on the wait marker (focus opens, Tab reaches the
-button, Enter sends, Escape closes); an unknown id; the console. Reduced
-motion was checked by reading the CSS, not by emulating it.
+button, Enter sends, Escape closes); an unknown id; the console.
+
+The motion pass, in Playwright at 1440, 900 and 390: each moment above in a
+slowed middle frame and at its end state; exits finishing at normal speed;
+a reload with stored reminders running no animations; the theme switch
+repainting on the next frame; the view-transition names on exactly one row,
+both ways; reduced motion emulated (no travel, instant heights, no toolbar
+shift); the console, clean apart from Motion's development notice under
+reduced motion.

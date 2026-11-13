@@ -75,7 +75,7 @@
 }
 .nota-stage .pui-badge[data-status='signed'],
 .nota-stage .pui-badge[data-status='paid'] {
-  background: var(--color-sage-500);
+  background: var(--color-sage-600);
   color: #fff;
 }
 .nota-stage .pui-badge[data-size='sm'] {
@@ -104,11 +104,11 @@
   color: var(--color-text-primary);
 }
 .nota-stage .pui-btn[data-variant='primary'] {
-  background: var(--color-sage-500);
-  color: #fff;
+  background: var(--color-button-primary);
+  color: var(--color-button-text-primary);
 }
 .nota-stage .pui-btn[data-variant='primary'][data-hover] {
-  background: var(--color-sage-600);
+  background: var(--color-button-hover);
 }
 
 .nota-stage .pui-avatar {

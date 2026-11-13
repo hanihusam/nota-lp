@@ -67,9 +67,9 @@
   --color-icon-secondary: var(--color-gray-500);
   --color-icon-accent: var(--color-sage-400);
 
-  --color-button-primary: var(--color-sage-500);
-  --color-button-hover: var(--color-sage-600);
-  --color-button-pressed: var(--color-sage-700);
+  --color-button-primary: var(--color-sage-600);
+  --color-button-hover: var(--color-sage-700);
+  --color-button-pressed: var(--color-sage-800);
   --color-button-text-primary: #ffffff;
 
   --color-glow-accent: rgb(107 143 113 / 0.35);

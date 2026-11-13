@@ -4,17 +4,17 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type ReactNode,
 } from 'react'
+import {Toaster, toast as showToast} from 'sonner'
 
 /**
  * Figma: Dashboard → Proposals (prototype state)
  *
  * What the prototype remembers while you click around: which proposals got a
- * reminder or a longer expiry, and the one toast on screen. Kept in
- * sessionStorage so list and detail agree; nothing leaves the browser.
+ * reminder or a longer expiry. Kept in sessionStorage so list and detail
+ * agree; nothing leaves the browser. Toasts are Sonner's, styled with tokens.
  */
 
 interface DashboardState {
@@ -44,9 +44,7 @@ function readStore(): {reminded: string[]; extended: string[]} {
 export const DashboardProvider = ({children}: {children: ReactNode}) => {
   const [reminded, setReminded] = useState<ReadonlySet<string>>(new Set())
   const [extended, setExtended] = useState<ReadonlySet<string>>(new Set())
-  const [message, setMessage] = useState('')
   const [phase, setPhase] = useState<'server' | 'restored' | 'live'>('server')
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     const stored = readStore()
@@ -73,9 +71,7 @@ export const DashboardProvider = ({children}: {children: ReactNode}) => {
   }, [reminded, extended, phase])
 
   const toast = useCallback((next: string) => {
-    setMessage(next)
-    clearTimeout(timer.current)
-    timer.current = setTimeout(() => setMessage(''), 3200)
+    showToast(next)
   }, [])
 
   const remind = useCallback(
@@ -102,11 +98,16 @@ export const DashboardProvider = ({children}: {children: ReactNode}) => {
 
   return (
     <DashboardContext.Provider value={value}>
-      <div className="nota-app">
+      <div className="nota-app" data-live={live || undefined}>
         {children}
-        <div className="dash-toast" role="status" aria-live="polite">
-          {message ? <p className="dash-toast__body t-ui">{message}</p> : null}
-        </div>
+        <Toaster
+          position="bottom-center"
+          duration={3200}
+          gap={8}
+          offset={24}
+          mobileOffset={16}
+          toastOptions={{unstyled: true, classNames: {toast: 'dash-toast t-ui'}}}
+        />
       </div>
     </DashboardContext.Provider>
   )
@@ -118,13 +119,6 @@ export function useDashboard() {
   const ctx = useContext(DashboardContext)
   if (!ctx) throw new Error('useDashboard needs DashboardProvider')
   return ctx
-}
-
-/** True when this element mounted from a click, not from loading the page. */
-export function useEnters() {
-  const {live} = useDashboard()
-  const [enters] = useState(live)
-  return enters
 }
 
 type Pref = 'theme' | 'density'
@@ -152,7 +146,14 @@ export function usePreference<T extends string>(name: Pref, fallback: T) {
   const update = useCallback(
     (next: T) => {
       setValue(next)
-      document.documentElement.dataset[prefKey(name)] = next
+      const root = document.documentElement
+      if (name === 'theme') {
+        // Every token changes at once; without this, anything with a colour
+        // transition would trail the rest of the page by 200ms.
+        root.dataset.notaSwitching = ''
+        requestAnimationFrame(() => requestAnimationFrame(() => delete root.dataset.notaSwitching))
+      }
+      root.dataset[prefKey(name)] = next
       try {
         localStorage.setItem(`nota-${name}`, next)
       } catch {

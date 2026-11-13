@@ -1,4 +1,5 @@
 import {useEffect, useId, useRef, useState, type CSSProperties} from 'react'
+import * as m from 'motion/react-m'
 
 import {Icon} from '~/components/ui/icon'
 import {cn} from '~/lib/cn'
@@ -6,6 +7,7 @@ import type {Proposal} from '~/lib/dashboard/data'
 import {canRemind, extendExpiry, moneyParts, swapExpiry, waitedAfterExtend} from '~/lib/dashboard/format'
 import type {IconName} from '~/lib/icons'
 
+import {Swap, useMeasure, useSwapTransition} from './motion'
 import {useDashboard} from './state'
 
 /**
@@ -143,14 +145,26 @@ export const Journey = ({p, compact = false, className}: {p: Proposal; compact?:
 
 Journey.displayName = 'Journey'
 
+/**
+ * One tooltip is open at a time. Once one is open (or just closed), the next
+ * opens at once and without animation, so scanning down the column is quick.
+ */
+const tips = {close: null as null | (() => void), closedAt: 0}
+const isWarm = () => tips.close !== null || Date.now() - tips.closedAt < 400
+
 /** The clock on the waiting stretch. Hover for 300ms or focus to open. */
 export const WaitMarker = ({p, waited, attention}: {p: Proposal; waited: number; attention: boolean}) => {
   const {reminded, extended, remind} = useDashboard()
   const [open, setOpen] = useState(false)
+  const [instant, setInstant] = useState(false)
   const [sent, setSent] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
   const wrap = useRef<HTMLSpanElement>(null)
   const marker = useRef<HTMLButtonElement>(null)
+  const closeNow = useRef(() => {
+    setInstant(true)
+    setOpen(false)
+  })
   const tipId = useId()
   const expires = expiryOf(p, extended)
   const why = reminded.has(p.id)
@@ -162,11 +176,33 @@ export const WaitMarker = ({p, waited, attention}: {p: Proposal; waited: number;
 
   useEffect(() => () => clearTimeout(timer.current), [])
   useEffect(() => {
+    if (open) {
+      tips.close = closeNow.current
+      return
+    }
+    if (tips.close === closeNow.current) {
+      tips.close = null
+      tips.closedAt = Date.now()
+    }
+  }, [open])
+  useEffect(
+    () => () => {
+      if (tips.close === closeNow.current) tips.close = null
+    },
+    [],
+  )
+  useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
+
+  const show = (now: boolean) => {
+    if (tips.close && tips.close !== closeNow.current) tips.close()
+    setInstant(now)
+    setOpen(true)
+  }
 
   const send = () => {
     // Keep focus inside the marker so the confirmation stays open.
@@ -188,7 +224,8 @@ export const WaitMarker = ({p, waited, attention}: {p: Proposal; waited: number;
       onPointerEnter={(e) => {
         if (e.pointerType !== 'mouse') return
         clearTimeout(timer.current)
-        timer.current = setTimeout(() => setOpen(true), 300)
+        if (isWarm()) show(true)
+        else timer.current = setTimeout(() => show(false), 300)
       }}
       onPointerLeave={(e) => {
         if (e.pointerType !== 'mouse' || sent) return
@@ -208,12 +245,15 @@ export const WaitMarker = ({p, waited, attention}: {p: Proposal; waited: number;
         aria-label={`Waited ${pct}% of the time to expiry`}
         aria-describedby={open ? tipId : undefined}
         aria-expanded={open}
-        onFocus={() => setOpen(true)}
-        onClick={() => setOpen((v) => !v)}
+        onFocus={() => show(isWarm())}
+        onClick={() => {
+          // Focus already opened it on a mouse click; tap elsewhere or Escape closes.
+          if (!open) show(false)
+        }}
       >
         <Icon name="clock" size={12} />
       </button>
-      <span id={tipId} role="tooltip" className="tip" data-open={open || undefined}>
+      <span id={tipId} role="tooltip" className="tip" data-open={open || undefined} data-instant={instant || undefined}>
         {sent ? (
           <span className="tip__sent t-ui">
             <Icon name="check-circle" size={14} /> Reminder sent to {p.contact}
@@ -245,6 +285,24 @@ export const Chip = ({tone, icon, children}: {tone: ChipTone; icon: IconName; ch
 )
 
 Chip.displayName = 'Chip'
+
+/** A chip whose label changes in place: the text crossfades and the chip eases to its new width. */
+export const SwapChip = ({tone, icon, children}: {tone: ChipTone; icon: IconName; children: string}) => {
+  const [ref, size] = useMeasure<HTMLSpanElement>()
+  const transition = useSwapTransition()
+  return (
+    <m.span className="chip chip--swap t-badge" data-tone={tone} animate={{width: size ? size.width : 'auto'}} transition={transition}>
+      <span ref={ref} className="chip__in">
+        <Swap id={children}>
+          <Icon name={icon} size={12} />
+          {children}
+        </Swap>
+      </span>
+    </m.span>
+  )
+}
+
+SwapChip.displayName = 'SwapChip'
 
 /** The status chip for a stage. */
 export function statusChip(p: Proposal): {tone: ChipTone; icon: IconName; label: string} {

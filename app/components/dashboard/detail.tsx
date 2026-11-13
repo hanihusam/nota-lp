@@ -1,4 +1,6 @@
-import type {CSSProperties} from 'react'
+import {useEffect, useRef, useState, type CSSProperties} from 'react'
+import {AnimatePresence} from 'motion/react'
+import * as m from 'motion/react-m'
 import {Link} from 'react-router'
 
 import {Icon} from '~/components/ui/icon'
@@ -7,7 +9,8 @@ import {canRemind, extendExpiry, swapExpiry} from '~/lib/dashboard/format'
 import type {IconName} from '~/lib/icons'
 
 import {Money, Stop, expiryOf, isNudged} from './journey'
-import {useDashboard, useEnters} from './state'
+import {AutoHeight, Swap, useHeightTransition, useSwapTransition} from './motion'
+import {useDashboard} from './state'
 
 /**
  * Figma: 06 — Dashboard → Proposal detail / Desktop 1440, Phone 390
@@ -32,7 +35,7 @@ export const ProposalDetail = ({p, dataset}: {p: Proposal; dataset: string | nul
   return (
     <main className="dash-main detail">
       <nav className="crumbs t-ui-regular" aria-label="Breadcrumb">
-        <Link to={back}>
+        <Link to={back} viewTransition>
           <Icon name="chevron-down" size={12} className="crumbs__back" /> Proposals
         </Link>
         <span aria-hidden>/</span>
@@ -47,16 +50,7 @@ export const ProposalDetail = ({p, dataset}: {p: Proposal; dataset: string | nul
         <div className="detail__side">
           <Money amount={p.amount} currency={p.currency} className="detail__value" />
           <div className="detail__actions">
-            <button
-              type="button"
-              className="btn btn--secondary t-ui"
-              onClick={() => {
-                navigator.clipboard?.writeText(window.location.href).catch(() => undefined)
-                toast('Link copied')
-              }}
-            >
-              <Icon name="link" size={14} /> Copy link
-            </button>
+            <CopyLink />
             <button type="button" className="btn btn--secondary t-ui" onClick={() => toast('PDF export is not part of this prototype.')}>
               <Icon name="arrow-down-tray" size={14} /> Download PDF
             </button>
@@ -100,9 +94,11 @@ export const ProposalDetail = ({p, dataset}: {p: Proposal; dataset: string | nul
           />
           <RailSection title="Activity" note={p.stage === 'draft' ? 'No events yet' : undefined}>
             <ol className="timeline">
-              {eventsOf(p, {reminded: wasReminded, extended: wasExtended, settled: !nudged && Boolean(p.nudge), expires}).map((ev, i, list) => (
-                <TimelineItem key={i} ev={ev} first={i === 0} last={i === list.length - 1} attention={nudged} partial={p.signing ? p.signing.signed / p.signing.total : undefined} />
-              ))}
+              <AnimatePresence initial={false}>
+                {eventsOf(p, {reminded: wasReminded, extended: wasExtended, settled: !nudged && Boolean(p.nudge), expires}).map((ev, i, list) => (
+                  <TimelineItem key={ev.key} ev={ev} first={i === 0} last={i === list.length - 1} attention={nudged} partial={p.signing ? p.signing.signed / p.signing.total : undefined} />
+                ))}
+              </AnimatePresence>
             </ol>
           </RailSection>
           <RailSection title="Signers" note={signedNote(p)}>
@@ -156,7 +152,9 @@ export const ProposalDetail = ({p, dataset}: {p: Proposal; dataset: string | nul
             <div className="reminders">
               <span className="reminders__text">
                 <span className="t-ui-regular">{remindersLine(p)[0]}</span>
-                <span className="t-caption">{wasReminded ? 'Next one in 3 days' : remindersLine(p)[1]}</span>
+                <Swap id={wasReminded ? 'next' : 'rule'} className="t-caption">
+                  {wasReminded ? 'Next one in 3 days' : remindersLine(p)[1]}
+                </Swap>
               </span>
               <button type="button" className="btn btn--ghost t-ui" onClick={() => toast('Reminder settings are not part of this prototype.')}>
                 Change
@@ -197,9 +195,15 @@ const Callout = ({p, nudged, reminded, extended, expires, onRemind, onExtend}: C
   const {toast} = useDashboard()
   const view = calloutOf(p, {nudged, reminded, extended, expires})
   return (
-    <div className="callout" data-tone={view.tone} aria-live="polite">
-      <CalloutHead key={view.title} icon={view.icon} title={view.title} />
-      <p className="t-body callout__body">{view.body}</p>
+    <AutoHeight className="callout" innerClassName="callout__in" data-tone={view.tone} aria-live="polite">
+      <p className="callout__head t-ui">
+        <Swap id={view.title}>
+          <Icon name={view.icon} size={14} /> {view.title}
+        </Swap>
+      </p>
+      <p className="t-body callout__body">
+        <Swap id={view.body}>{view.body}</Swap>
+      </p>
       <div className="callout__actions">
         {view.primary === 'remind' ? (
           <button type="button" className="btn btn--primary t-ui" onClick={onRemind}>
@@ -216,22 +220,56 @@ const Callout = ({p, nudged, reminded, extended, expires, onRemind, onExtend}: C
           </button>
         ) : null}
       </div>
-    </div>
+    </AutoHeight>
   )
 }
 
 Callout.displayName = 'Callout'
 
-const CalloutHead = ({icon, title}: {icon: IconName; title: string}) => {
-  const enters = useEnters()
+const ICON_SWAP = {
+  hidden: {opacity: 0, scale: 0.25, filter: 'blur(4px)'},
+  shown: {opacity: 1, scale: 1, filter: 'blur(0px)'},
+}
+
+/** Confirms on itself: the link icon turns into a check and the label into Copied. */
+const CopyLink = () => {
+  const [copied, setCopied] = useState(false)
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const transition = useSwapTransition()
+  useEffect(() => () => clearTimeout(timer.current), [])
   return (
-    <p className="callout__head t-ui" data-enter={enters || undefined}>
-      <Icon name={icon} size={14} /> {title}
-    </p>
+    <>
+      <button
+        type="button"
+        className="btn btn--secondary t-ui copy"
+        aria-label="Copy link"
+        onClick={() => {
+          navigator.clipboard?.writeText(window.location.href).catch(() => undefined)
+          setCopied(true)
+          clearTimeout(timer.current)
+          timer.current = setTimeout(() => setCopied(false), 2000)
+        }}
+      >
+        <span className="copy__icon" aria-hidden>
+          <AnimatePresence mode="popLayout" initial={false}>
+            <m.span key={copied ? 'check' : 'link'} variants={ICON_SWAP} initial="hidden" animate="shown" exit="hidden" transition={transition}>
+              <Icon name={copied ? 'check' : 'link'} size={14} />
+            </m.span>
+          </AnimatePresence>
+        </span>
+        <span className="copy__label" aria-hidden>
+          <span data-on={!copied || undefined}>Copy link</span>
+          <span data-on={copied || undefined}>Copied</span>
+        </span>
+      </button>
+      <span className="visually-hidden" role="status">
+        {copied ? 'Link copied' : ''}
+      </span>
+    </>
   )
 }
 
-CalloutHead.displayName = 'CalloutHead'
+CopyLink.displayName = 'CopyLink'
 
 function calloutOf(
   p: Proposal,
@@ -265,10 +303,24 @@ function calloutOf(
 const STOP_ICON = (title: string): IconName =>
   /^Sent|^Bounced/.test(title) ? 'paper-airplane' : /^Opened|^Not opened|opened/.test(title) ? 'eye' : /^Signed/.test(title) ? 'check-circle' : /^Expired/.test(title) ? 'x-mark' : 'pencil'
 
-const TimelineItem = ({ev, first, last, attention, partial}: {ev: TimelineEvent; first: boolean; last: boolean; attention: boolean; partial?: number}) => {
+type KeyedEvent = TimelineEvent & {key: string}
+
+const keyed = (events: TimelineEvent[]): KeyedEvent[] => events.map((e, i) => ({...e, key: `e${i}`}))
+
+/** New events (your reminder, your extension) grow into place; the rest move down. */
+const TimelineItem = ({ev, first, last, attention, partial}: {ev: KeyedEvent; first: boolean; last: boolean; attention: boolean; partial?: number}) => {
+  const transition = useHeightTransition()
   const stopState = ev.kind === 'done' ? 'done' : ev.kind === 'current' ? 'current' : ev.kind === 'failed' ? 'failed' : ev.kind === 'partial' ? 'partial' : 'pending'
   return (
-    <li className="tl" data-kind={ev.kind} data-attention={(ev.kind === 'waiting' && attention) || undefined}>
+    <m.li
+      className="tl"
+      data-kind={ev.kind}
+      data-attention={(ev.kind === 'waiting' && attention) || undefined}
+      initial={{height: 0, opacity: 0}}
+      animate={{height: 'auto', opacity: 1}}
+      transition={transition}
+      style={ev.kind === 'event' ? {overflow: 'hidden'} : undefined}
+    >
       <span className="tl__rail" aria-hidden>
         <span className="tl__line tl__line--above" data-hidden={first || undefined} />
         {ev.kind === 'event' ? (
@@ -283,21 +335,26 @@ const TimelineItem = ({ev, first, last, attention, partial}: {ev: TimelineEvent;
         <span className="tl__line tl__line--below" data-hidden={last || undefined} />
       </span>
       <span className="tl__text">
-        <span className={ev.kind === 'event' || ev.kind === 'pending' ? 't-ui-regular' : 't-ui'}>{ev.title}</span>
-        <span className="t-caption tl__meta">{ev.meta}</span>
+        <Swap id={ev.title} className={ev.kind === 'event' || ev.kind === 'pending' ? 't-ui-regular' : 't-ui'}>
+          {ev.title}
+        </Swap>
+        <Swap id={ev.meta} className="t-caption tl__meta">
+          {ev.meta}
+        </Swap>
       </span>
-    </li>
+    </m.li>
   )
 }
 
 TimelineItem.displayName = 'TimelineItem'
 
-function eventsOf(p: Proposal, s: {reminded: boolean; extended: boolean; settled: boolean; expires?: string}): TimelineEvent[] {
+function eventsOf(p: Proposal, s: {reminded: boolean; extended: boolean; settled: boolean; expires?: string}): KeyedEvent[] {
   const date = (label: string, word: string) => label.replace(`${word} `, '')
-  const extra: TimelineEvent[] = []
-  if (s.reminded) extra.push({kind: 'event', title: 'Reminder sent by you', meta: `Just now, to ${p.contact}`})
-  if (s.extended && p.expires) extra.push({kind: 'event', title: 'Expiry extended by you', meta: `Just now, from ${p.expires} to ${s.expires}`})
-  const tail = (events: TimelineEvent[]) => {
+  const extra: KeyedEvent[] = []
+  if (s.reminded) extra.push({key: 'reminded', kind: 'event', title: 'Reminder sent by you', meta: `Just now, to ${p.contact}`})
+  if (s.extended && p.expires) extra.push({key: 'extended', kind: 'event', title: 'Expiry extended by you', meta: `Just now, from ${p.expires} to ${s.expires}`})
+  const tail = (base: TimelineEvent[]) => {
+    const events = keyed(base)
     const at = events.findIndex((e) => e.kind === 'waiting' || e.kind === 'pending' || e.kind === 'partial')
     const list = at === -1 ? [...events, ...extra] : [...events.slice(0, at), ...extra, ...events.slice(at)]
     return list.map((e) =>
@@ -312,11 +369,11 @@ function eventsOf(p: Proposal, s: {reminded: boolean; extended: boolean; settled
   const [sent, opened, signed] = p.stops
   switch (p.stage) {
     case 'draft':
-      return [
+      return keyed([
         {kind: 'pending', title: 'Not sent yet', meta: `Draft, ${(sent.detail ?? '').toLowerCase()}`},
         {kind: 'pending', title: 'Opened', meta: "You'll see who opened it and for how long"},
         {kind: 'pending', title: 'Signature', meta: `${p.contact} signs here`},
-      ]
+      ])
     case 'bounced':
       return tail([
         {kind: 'failed', title: sent.label, meta: sent.detail ?? ''},
@@ -344,17 +401,17 @@ function eventsOf(p: Proposal, s: {reminded: boolean; extended: boolean; settled
         {kind: 'partial', title: signed.label, meta: signed.detail ?? ''},
       ])
     case 'signed':
-      return [
+      return keyed([
         {kind: 'done', title: 'Sent', meta: `${date(sent.label, 'Sent')} by Jordan Doe`},
         {kind: 'done', title: opened.label, meta: `By ${p.contact}`},
         {kind: 'done', title: signed.label, meta: `${signed.detail ?? ''}. A signed copy went to both sides.`},
-      ]
+      ])
     case 'expired':
-      return [
+      return keyed([
         {kind: 'done', title: 'Sent', meta: `${date(sent.label, 'Sent')} by Jordan Doe`},
         {kind: p.opens ? 'done' : 'pending', title: opened.label, meta: p.opens ? `By ${p.contact}` : 'Never opened'},
         {kind: 'failed', title: signed.label, meta: 'Not signed in time'},
-      ]
+      ])
   }
 }
 

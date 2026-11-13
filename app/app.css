@@ -40,6 +40,21 @@
   --color-sage-900: #1a2f20;
   --color-sage-950: #0f1f14;
 
+  /* Dashboard prototype primitives (Figma "Primitives", added 2026-11) */
+  --color-red-50: #fbf1ef;
+  --color-red-200: #f1c9c2;
+  --color-red-400: #e0857a;
+  --color-red-600: #b84f44;
+  --color-red-700: #9a3f36;
+  --color-red-900: #3d1d1a;
+  --color-red-950: #241311;
+  --color-amber-50: #fbf5e6;
+  --color-amber-200: #f0d79c;
+  --color-amber-400: #dcab4a;
+  --color-amber-500: #b98221;
+  --color-amber-700: #7a540f;
+  --color-amber-900: #3a2a0c;
+
   /* Semantic — Figma collection "Tokens" */
   --color-background-primary: var(--color-gray-950);
   --color-background-secondary: var(--color-gray-900);
@@ -71,6 +86,26 @@
   --color-button-hover: var(--color-sage-700);
   --color-button-pressed: var(--color-sage-800);
   --color-button-text-primary: #ffffff;
+
+  /* Dashboard tokens (dark values; light ones are in dashboard.css) */
+  --color-surface-selected: var(--color-sage-950);
+  --color-surface-accent-subtle: var(--color-sage-900);
+  --color-border-focus: var(--color-sage-400);
+  --color-status-danger-text: var(--color-red-400);
+  --color-status-danger-surface: var(--color-red-950);
+  --color-status-danger-border: var(--color-red-900);
+  --color-status-draft-mark: var(--color-sage-700);
+  --color-status-sent-mark: var(--color-sage-600);
+  --color-status-opened-mark: var(--color-sage-400);
+  --color-status-signed-mark: var(--color-sage-200);
+  --color-status-expired-mark: var(--color-red-400);
+  --color-status-attention-mark: var(--color-amber-400);
+  --color-status-attention-text: var(--color-amber-200);
+  --color-status-attention-surface: var(--color-amber-900);
+  --color-paper-surface: var(--color-gray-100);
+  --color-paper-text: var(--color-gray-900);
+  --color-paper-muted: var(--color-gray-500);
+  --color-paper-rule: var(--color-gray-300);
 
   --color-glow-accent: rgb(107 143 113 / 0.35);
   --color-glow-spotlight: rgb(255 255 255 / 0.06);

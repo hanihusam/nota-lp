@@ -16,6 +16,8 @@ building or changing a section, read the doc for what you are touching:
   reduced motion → `docs/motion.md`
 - **Why it looks this way**: Stripe/Apple measurements, pricing model →
   `docs/research/`
+- **Dashboard prototype** (`/app`): routes, data, state, layout rules,
+  gotchas → `docs/dashboard.md`
 
 ## Code
 
@@ -40,6 +42,17 @@ kit (`app/vendor/stageshow`, treated as a dependency: see its `NOTICE.md`).
   `.nota-stage`); every product `Stage` takes `className="nota-stage …"`.
 - A story plays once, starts at half visible, and its `poster` is the final
   frame. Phone-width stages have a `compact` design of their own.
+
+## Dashboard prototype
+
+`/app` is a clickable concept of the app (proposals list and detail), built
+from Figma pages 06 and 07. It is labelled a concept on every screen, uses
+made-up data only, and is `noindex`.
+
+- Code: `app/components/dashboard/`, `app/lib/dashboard/`, `app/routes/app*.tsx`.
+- Styles are plain CSS in `dashboard.css`, scoped under `.nota-app`, with
+  its own light mode. Colors still come from tokens in `app.css`.
+- Test changes with `?data=stress` and at 1440, 900 and 390 wide.
 
 ## Open decisions (the owner's)
 

@@ -12,11 +12,16 @@ differ, these rules win:
   route modules (`app/routes/*`), which React Router requires.
 - **Class merging:** `cn()` from `~/lib/cn` (clsx + tailwind-merge) wherever
   the guide says `clsxm`.
-- **Theme:** dark only. Use Token classes with no `dark:` variants.
+- **Theme:** the landing page is dark only. Use Token classes with no
+  `dark:` variants. The `/app` prototype adds a scoped light mode in
+  `dashboard.css` (`docs/dashboard.md`).
 - **Structure:** sections are files in `app/components/`, with a folder only
-  when a section has parts (`hero/`, `how-it-works/`, `bento/`, `product/`).
-- **Data and errors:** the page is static. It has no queries, toasts or
-  loading states; the error boundary is in `app/root.tsx`.
+  when a section has parts (`hero/`, `how-it-works/`, `bento/`, `product/`,
+  `dashboard/`).
+- **Data and errors:** the landing page is static. It has no queries, toasts
+  or loading states; the error boundary is in `app/root.tsx`. The `/app`
+  prototype keeps click state in `sessionStorage`, shows one toast, and has
+  its own error boundary on the detail route.
 - **Product pictures:** faux app UI is plain CSS in `product.css` and the
   section's own sheet, sized in px, scoped under the stage's class.
 

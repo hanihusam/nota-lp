@@ -20,6 +20,8 @@ November 7, 2026).
 | 03 — Landing page | `532:761` | Prototype components: the sets the prototype plays (below) |
 | 04 — Motion | `397:100` | Motion principles, tokens and specs; entrances and reveals; the Figma Motion stories: hero `523:56`, steps `486:879`, `486:942`, `486:1038` |
 | 05 — Social | `499:412` | OG image, exported to `public/og-image.png` |
+| 06 — Dashboard | `595:25` | App screens (Proposals, Proposal detail, Overview, Settings) in dark and light, desktop and phone, every state and a stress test; `/app` builds Proposals and detail (`dashboard.md`) |
+| 07 — Dashboard Handoff | `595:26` | Handoff doc `659:2` and the portfolio exports |
 
 Desktop sections: Navbar `459:231`, Hero `459:232`, Audience `459:558`,
 How it works `459:567`, Features `459:717`, Pricing `468:379`, FAQ `459:869`,
@@ -37,6 +39,7 @@ Final CTA `459:881`, Footer `459:889`.
 | FAQ | `components/faq.tsx` |
 | Final CTA | `components/final-cta.tsx` |
 | 04 — Motion stories | the matching Stageshow scripts (`motion.md`, Product stories) |
+| 06 — Dashboard: Proposals, Proposal detail | `components/dashboard/*` (map in `dashboard.md`) |
 
 Component doc comments start with their Figma path: `Figma: Landing → …`
 for a part of the Landing frames, `Figma: 02 — Components → …` for a

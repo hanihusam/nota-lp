@@ -19,6 +19,11 @@ Two Figma collections, two layers in CSS:
 - **Tokens** (`background/*`, `surface/*`, `text/*`, `border/*`, `icon/*`,
   `button/*`, `glow/*`): what page UI uses. They alias primitives.
 
+The dashboard added `red/*` and `amber/*` primitives and the `status/*`,
+`paper/*`, `surface/selected`, `surface/accent-subtle` and `border/focus`
+tokens. `app.css` holds their dark values; the light ones are in
+`dashboard.css` (`dashboard.md`).
+
 Page components use **Token** classes (`bg-background-primary`,
 `text-text-secondary`, `border-border-subtle`). A hex value in a component is a
 missing token: add the token in both places instead.
